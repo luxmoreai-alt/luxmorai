@@ -8,7 +8,11 @@ export function Footer() {
     <footer className="bg-slate-950 text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_1fr] lg:px-8">
         <div>
-          <img className="mb-5 h-14 w-auto rounded bg-white px-2 py-1" src="/luxmorai-logo.png" alt="Luxmorai" />
+          <img
+            className="mb-5 h-16 w-52 rounded-md bg-white object-cover object-[center_43%]"
+            src="/luxmorai-logo.png"
+            alt="Luxmorai Technologies Pvt Ltd"
+          />
           <p className="max-w-md text-sm leading-7 text-slate-300">
             Luxmorai Technologies Pvt Ltd designs scalable digital products for businesses that need reliable software,
             practical AI, and measurable growth.

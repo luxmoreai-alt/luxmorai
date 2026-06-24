@@ -1,5 +1,5 @@
 import { Send } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Section } from "../components/Section";
 import { services } from "../data/services";
@@ -7,9 +7,13 @@ import { sendInquiry } from "../lib/api";
 
 export function Contact() {
   const [loading, setLoading] = useState(false);
+  const isSubmitting = useRef(false);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
     const data = new FormData(event.currentTarget);
     const payload = {
       name: String(data.get("name") ?? ""),
@@ -19,14 +23,16 @@ export function Contact() {
       message: String(data.get("message") ?? ""),
     };
 
+    toast.dismiss();
     setLoading(true);
     try {
       await sendInquiry(payload);
       toast.success("Inquiry sent successfully.");
       event.currentTarget.reset();
     } catch {
-      toast.info("Inquiry captured locally. Connect an API with VITE_API_URL to submit it live.");
+      toast.error("We couldn't send your inquiry. Please try again in a moment.");
     } finally {
+      isSubmitting.current = false;
       setLoading(false);
     }
   }

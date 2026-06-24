@@ -1,12 +1,6 @@
 import axios from "axios";
 
-export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? "https://api.luxmorai.com",
-  timeout: 12000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzjzgql";
 
 export type InquiryPayload = {
   name: string;
@@ -17,5 +11,11 @@ export type InquiryPayload = {
 };
 
 export async function sendInquiry(payload: InquiryPayload) {
-  return api.post("/inquiries", payload);
+  return axios.post(FORMSPREE_ENDPOINT, payload, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    timeout: 12000,
+  });
 }
