@@ -6,6 +6,8 @@ import { services } from "../data/services";
 import { sendInquiry } from "../lib/api";
 import { useSeo } from "../lib/seo";
 
+const CONTACT_TOAST_ID = "contact-form";
+
 export function Contact() {
   const [loading, setLoading] = useState(false);
   const isSubmitting = useRef(false);
@@ -22,7 +24,8 @@ export function Contact() {
     if (isSubmitting.current) return;
 
     isSubmitting.current = true;
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const data = new FormData(form);
     const payload = {
       name: String(data.get("name") ?? ""),
       email: String(data.get("email") ?? ""),
@@ -31,14 +34,16 @@ export function Contact() {
       message: String(data.get("message") ?? ""),
     };
 
-    toast.dismiss();
     setLoading(true);
+    toast.dismiss();
+    toast.loading("Sending your inquiry...", { id: CONTACT_TOAST_ID });
+
     try {
       await sendInquiry(payload);
-      toast.success("Inquiry sent successfully.");
-      event.currentTarget.reset();
+      toast.success("Inquiry sent successfully.", { id: CONTACT_TOAST_ID });
+      form.reset();
     } catch {
-      toast.error("We couldn't send your inquiry. Please try again in a moment.");
+      toast.error("We couldn't send your inquiry. Please try again in a moment.", { id: CONTACT_TOAST_ID });
     } finally {
       isSubmitting.current = false;
       setLoading(false);
