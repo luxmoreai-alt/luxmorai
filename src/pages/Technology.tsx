@@ -2,11 +2,20 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Section } from "../components/Section";
 import { featuredTechnologies, technologyGroups } from "../data/technologies";
+import { useSeo } from "../lib/seo";
 
 export function Technology() {
+  useSeo({
+    title: "Technology Stack | AI, Cloud, Web, Data & Software Engineering | Luxmor AI",
+    description:
+      "Explore Luxmor AI technology capabilities across AI and machine learning, cloud computing, frontend development, backend systems, databases, analytics, testing, and delivery processes.",
+    path: "/technology",
+  });
+
   return (
     <>
       <Section
+        headingLevel="h1"
         eyebrow="Technology Stack"
         title="Tools, platforms, and processes for modern delivery"
         intro="Luxmorai combines frontend engineering, backend systems, cloud infrastructure, testing, analytics, and AI-focused product development."

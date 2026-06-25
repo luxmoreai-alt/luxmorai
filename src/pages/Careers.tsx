@@ -1,6 +1,7 @@
 import { BriefcaseBusiness, Lightbulb, Rocket, Send, ShieldCheck, Users } from "lucide-react";
 import { FormEvent, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useSeo } from "../lib/seo";
 
 const categories = ["Development", "Internship", "Testing", "Management", "Designing", "SEO"];
 
@@ -49,6 +50,13 @@ const careerFeatures = [
 export function Careers() {
   const [activeCategory, setActiveCategory] = useState("Development");
   const fullTimeOpenings = useMemo(() => openings.filter((opening) => opening.type === "Full time").length, []);
+
+  useSeo({
+    title: "Careers at Luxmor AI | Software, AI, Mobile, Testing & SEO Jobs",
+    description:
+      "Explore career opportunities at Luxmor AI across software development, mobile app development, testing, UI/UX design, SEO, internships, and technology leadership roles.",
+    path: "/careers",
+  });
 
   const filteredOpenings = useMemo(
     () => openings.filter((opening) => opening.category === activeCategory),

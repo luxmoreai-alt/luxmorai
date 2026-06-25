@@ -4,10 +4,18 @@ import { toast } from "sonner";
 import { Section } from "../components/Section";
 import { services } from "../data/services";
 import { sendInquiry } from "../lib/api";
+import { useSeo } from "../lib/seo";
 
 export function Contact() {
   const [loading, setLoading] = useState(false);
   const isSubmitting = useRef(false);
+
+  useSeo({
+    title: "Contact Luxmor AI | Discuss AI, CRM, Software & Automation Projects",
+    description:
+      "Contact Luxmor AI to discuss AI solutions, CRM development, workflow automation, custom software, web development, mobile apps, and digital product ideas.",
+    path: "/contact",
+  });
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,6 +47,7 @@ export function Contact() {
 
   return (
     <Section
+      headingLevel="h1"
       tone="dark"
       eyebrow="Get In Touch"
       title="Ready to transform your idea into scalable digital reality?"

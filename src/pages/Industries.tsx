@@ -2,10 +2,19 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Section } from "../components/Section";
 import { industries } from "../data/industries";
+import { useSeo } from "../lib/seo";
 
 export function Industries() {
+  useSeo({
+    title: "Industries We Serve | AI and Software Solutions | Luxmor AI",
+    description:
+      "Luxmor AI builds software, AI automation, web platforms, mobile apps, and digital systems for finance, healthcare, education, ecommerce, manufacturing, logistics, travel, and technology companies.",
+    path: "/industries",
+  });
+
   return (
     <Section
+      headingLevel="h1"
       tone="soft"
       eyebrow="What We Serve"
       title="Industry-focused software delivery"

@@ -727,6 +727,44 @@ textarea {
   object-fit: cover;
 }
 
+.blog-card-image {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 1.1rem;
+}
+
+.blog-hero-image {
+  aspect-ratio: 16 / 11;
+  width: 100%;
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: 0 28px 70px rgba(2, 6, 23, 0.35);
+}
+
+.blog-summary-box {
+  margin-bottom: 2.5rem;
+  border: 1px solid #bae6fd;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #eff6ff, #f8fafc);
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.blog-summary-box h2 {
+  margin-top: 0.4rem;
+  color: #0f172a;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.blog-summary-box p:last-child {
+  margin-top: 0.85rem;
+  color: #475569;
+  line-height: 1.8;
+}
+
 .industry-card-image {
   aspect-ratio: 16 / 10;
   width: 100%;

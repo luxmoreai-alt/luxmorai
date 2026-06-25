@@ -1,5 +1,6 @@
 import { ArrowRight, BadgeCheck, Building2, Check, ChevronRight, Lightbulb, MapPin, Rocket, ShieldCheck, Timer, UsersRound } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSeo } from "../lib/seo";
 
 const pillars = [
   {
@@ -47,6 +48,13 @@ const officeLocations = [
 ];
 
 export function About() {
+  useSeo({
+    title: "About Luxmor AI | Custom Software and AI Development Company",
+    description:
+      "Learn about Luxmor AI, a technology partner building custom software, AI solutions, web platforms, mobile apps, cloud systems, and digital products.",
+    path: "/about",
+  });
+
   return (
     <>
       <section className="about-hero">

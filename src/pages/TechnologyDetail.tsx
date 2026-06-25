@@ -1,10 +1,19 @@
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { getTechnologyGroupBySlug, technologyGroups } from "../data/technologies";
+import { useSeo } from "../lib/seo";
 
 export function TechnologyDetail() {
   const { slug } = useParams();
   const technology = getTechnologyGroupBySlug(slug);
+
+  useSeo({
+    title: technology ? `${technology.title} Services and Technology Capabilities | Luxmor AI` : "Technology Stack | Luxmor AI",
+    description: technology
+      ? `${technology.summary} Luxmor AI uses ${technology.title.toLowerCase()} to build reliable software, AI workflows, web platforms, mobile apps, and business systems.`
+      : "Explore Luxmor AI technology capabilities across AI, cloud, web, backend, data, testing, and software delivery.",
+    path: technology ? `/technology/${technology.slug}` : "/technology",
+  });
 
   if (!technology) {
     return <Navigate to="/technology" replace />;
