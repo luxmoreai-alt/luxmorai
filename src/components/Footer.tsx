@@ -3,6 +3,21 @@ import { Link } from "react-router-dom";
 
 const links = ["AI & ML", "Software Development", "Mobile Apps", "Website Development", "UI/UX Design", "Digital Marketing"];
 
+const offices = [
+  {
+    name: "Hyderabad Head Office",
+    address: "19/3RT, Line 2, Street 5, Prakash Nagar, Begumpet, Hyderabad, Telangana 500016",
+  },
+  {
+    name: "Bangalore Office",
+    address: "Pritech Rd, Bellandur, Bengaluru, Karnataka 560103",
+  },
+  {
+    name: "Chennai Office",
+    address: "25H9+8M6, Mount Poonamallee Rd, Porur, Chennai, Tamil Nadu 600116",
+  },
+];
+
 export function Footer() {
   return (
     <footer className="bg-slate-950 text-white">
@@ -36,13 +51,15 @@ export function Footer() {
         <div>
           <h3 className="footer-title">Contact</h3>
           <div className="space-y-4 text-sm text-slate-300">
-            <p className="flex gap-3 leading-6">
-              <MapPin className="mt-0.5 h-4 w-4 text-amber-400" />
-              <span><strong className="block text-white">Hyderabad Head Office</strong>19/3RT, Line 2, Street 5, Prakash Nagar, Begumpet, Hyderabad, Telangana 500016</span>
-            </p>
-            <a className="flex gap-3 hover:text-white" href="mailto:hello@luxmorai.com">
+            {offices.map((office) => (
+              <p className="flex gap-3 leading-6" key={office.name}>
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+                <span><strong className="block text-white">{office.name}</strong>{office.address}</span>
+              </p>
+            ))}
+            <a className="flex gap-3 hover:text-white" href="mailto:luxmoreai@gmail.com">
               <Mail className="mt-0.5 h-4 w-4 text-amber-400" />
-              hello@luxmorai.com
+              luxmoreai@gmail.com
             </a>
           </div>
         </div>
