@@ -4,18 +4,18 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "backend/luxbackend/wsgi.py": {
+    "api/index.py": {
       "maxDuration": 60
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/backend/luxbackend/wsgi.py"
+      "destination": "/api/index.py"
     },
     {
       "source": "/admin/(.*)",
-      "destination": "/backend/luxbackend/wsgi.py"
+      "destination": "/api/index.py"
     },
     {
       "source": "/(.*)",
