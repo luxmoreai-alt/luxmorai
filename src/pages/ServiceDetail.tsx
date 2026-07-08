@@ -1,10 +1,19 @@
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { services, getServiceBySlug } from "../data/services";
+import { useSeo } from "../lib/seo";
 
 export function ServiceDetail() {
   const { slug } = useParams();
   const service = getServiceBySlug(slug);
+
+  useSeo({
+    title: service ? `${service.title} | Luxmor AI` : "Services | Luxmor AI",
+    description: service
+      ? `${service.summary} Luxmor AI plans, builds, launches, and supports reliable digital products for growing businesses.`
+      : "Explore Luxmor AI services for custom software, AI automation, CRM, web development, mobile apps, digital marketing, design, and testing.",
+    path: service ? `/services/${service.slug}` : "/services",
+  });
 
   if (!service) {
     return <Navigate to="/services" replace />;

@@ -1,16 +1,31 @@
 import { Send } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Section } from "../components/Section";
 import { services } from "../data/services";
 import { sendInquiry } from "../lib/api";
+import { useSeo } from "../lib/seo";
+
+const CONTACT_TOAST_ID = "contact-form";
 
 export function Contact() {
   const [loading, setLoading] = useState(false);
+  const isSubmitting = useRef(false);
+
+  useSeo({
+    title: "Contact Luxmor AI | Discuss AI, CRM, Software & Automation Projects",
+    description:
+      "Contact Luxmor AI to discuss AI solutions, CRM development, workflow automation, custom software, web development, mobile apps, and digital product ideas.",
+    path: "/contact",
+  });
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
+    const form = event.currentTarget;
+    const data = new FormData(form);
     const payload = {
       name: String(data.get("name") ?? ""),
       email: String(data.get("email") ?? ""),
@@ -20,19 +35,24 @@ export function Contact() {
     };
 
     setLoading(true);
+    toast.dismiss();
+    toast.loading("Sending your inquiry...", { id: CONTACT_TOAST_ID });
+
     try {
       await sendInquiry(payload);
-      toast.success("Inquiry sent successfully.");
-      event.currentTarget.reset();
+      toast.success("Inquiry sent successfully.", { id: CONTACT_TOAST_ID });
+      form.reset();
     } catch {
-      toast.info("Inquiry captured locally. Connect an API with VITE_API_URL to submit it live.");
+      toast.error("We couldn't send your inquiry. Please try again in a moment.", { id: CONTACT_TOAST_ID });
     } finally {
+      isSubmitting.current = false;
       setLoading(false);
     }
   }
 
   return (
     <Section
+      headingLevel="h1"
       tone="dark"
       eyebrow="Get In Touch"
       title="Ready to transform your idea into scalable digital reality?"

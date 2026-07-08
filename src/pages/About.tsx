@@ -1,5 +1,6 @@
 import { ArrowRight, BadgeCheck, Building2, Check, ChevronRight, Lightbulb, MapPin, Rocket, ShieldCheck, Timer, UsersRound } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSeo } from "../lib/seo";
 
 const pillars = [
   {
@@ -39,14 +40,31 @@ const officeLocations = [
     address: "19/3RT, Line 2, Street 5, Prakash Nagar, Begumpet, Hyderabad, Telangana 500016",
     details: ["Head office", "Leadership & operations", "Client delivery coordination"],
   },
-  { city: "Bangalore", position: "center", details: ["Technology & innovation", "Product engineering", "Client collaboration"] },
-  { city: "Chennai", position: "right", details: ["Digital delivery team", "Web & mobile solutions", "Client support"] },
+  {
+    city: "Bangalore",
+    position: "center",
+    address: "Pritech Rd, Bellandur, Bengaluru, Karnataka 560103",
+    details: ["Technology & innovation", "Product engineering", "Client collaboration"],
+  },
+  {
+    city: "Chennai",
+    position: "right",
+    address: "25H9+8M6, Mount Poonamallee Rd, Porur, Chennai, Tamil Nadu 600116",
+    details: ["Digital delivery team", "Web & mobile solutions", "Client support"],
+  },
   { city: "Noida", position: "center", details: ["Business operations", "Technology consulting", "Project coordination"] },
   { city: "Coimbatore", position: "left", details: ["Engineering delivery", "Quality-focused development", "Ongoing product support"] },
   { city: "Visakhapatnam", position: "right", details: ["Software development", "Technical delivery", "Client support"] },
 ];
 
 export function About() {
+  useSeo({
+    title: "About Luxmor AI | Custom Software and AI Development Company",
+    description:
+      "Learn about Luxmor AI, a technology partner building custom software, AI solutions, web platforms, mobile apps, cloud systems, and digital products.",
+    path: "/about",
+  });
+
   return (
     <>
       <section className="about-hero">

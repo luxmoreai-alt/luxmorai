@@ -1,10 +1,19 @@
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { getIndustryBySlug, industries } from "../data/industries";
+import { useSeo } from "../lib/seo";
 
 export function IndustryDetail() {
   const { slug } = useParams();
   const industry = getIndustryBySlug(slug);
+
+  useSeo({
+    title: industry ? `${industry.title} Software Solutions | AI, Web & Automation | Luxmor AI` : "Industries | Luxmor AI",
+    description: industry
+      ? `Luxmor AI builds ${industry.title.toLowerCase()} software solutions, AI automation, dashboards, portals, mobile apps, and workflow systems for modern businesses.`
+      : "Explore industry-focused AI, software, web, mobile, and automation solutions from Luxmor AI.",
+    path: industry ? `/industries/${industry.slug}` : "/industries",
+  });
 
   if (!industry) {
     return <Navigate to="/industries" replace />;

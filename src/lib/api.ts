@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const defaultApiUrl =
-  typeof window === "undefined" ? "http://127.0.0.1:8000/api" : `${window.location.protocol}//${window.location.hostname}:8000/api`;
-
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? defaultApiUrl,
+  baseURL: import.meta.env.VITE_API_URL ?? "https://api.luxmorai.com",
   timeout: 12000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 export type InquiryPayload = {
@@ -15,10 +15,6 @@ export type InquiryPayload = {
   service: string;
   message: string;
 };
-
-export async function sendInquiry(payload: InquiryPayload) {
-  return api.post("/inquiries/", payload);
-}
 
 export type CareerJob = {
   id: number;
@@ -44,37 +40,23 @@ export type AdminApplication = {
   totalExperience: string;
   currentCtc: string;
   expectedCtc: string;
-  careerGap: string;
-  message: string;
+  careerGap?: string;
+  message?: string;
   resumeUrl: string;
   status: string;
-  statusReason: string;
-  notes: string;
+  statusReason?: string;
+  notes?: string;
   createdAt: string;
 };
 
-export type TrackingApplication = {
-  id: number;
-  applicationNumber: string;
-  role: string;
-  name: string;
-  email: string;
-  phone: string;
-  status: string;
-  statusReason: string;
-  createdAt: string;
-};
+export type TrackingApplication = Pick<
+  AdminApplication,
+  "id" | "applicationNumber" | "role" | "name" | "email" | "phone" | "status" | "statusReason" | "createdAt"
+>;
 
-export type JobPayload = {
-  title: string;
-  category: string;
-  experience: string;
-  type: string;
-  location: string;
-  description: string;
-  requirements: string;
-  isActive: boolean;
-};
+export async function sendInquiry(payload: InquiryPayload) {
+  return api.post("/inquiries/", payload);
+}
 
 export async function getCareerJobs() {
   const response = await api.get<{ jobs: CareerJob[] }>("/jobs/");
@@ -82,9 +64,10 @@ export async function getCareerJobs() {
 }
 
 export async function sendCareerApplication(payload: FormData) {
-  const response = await api.post<{ id: number; trackingId: string; applicationNumber: string; emailSent: boolean; message: string }>(
+  const response = await api.post<{ trackingId: string; applicationNumber: string; emailSent: boolean }>(
     "/applications/",
     payload,
+    { headers: { "Content-Type": "multipart/form-data" } },
   );
   return response.data;
 }
@@ -99,7 +82,7 @@ export async function getAdminJobs() {
   return response.data.jobs;
 }
 
-export async function createAdminJob(payload: JobPayload) {
+export async function createAdminJob(payload: Omit<CareerJob, "id">) {
   const response = await api.post<{ job: CareerJob }>("/admin/jobs/", payload);
   return response.data.job;
 }
@@ -120,10 +103,9 @@ export async function updateAdminApplicationStatus(
   statusReason: string,
   notes: string,
 ) {
-  const response = await api.post<{ application: AdminApplication; emailSent: boolean }>(`/admin/applications/${applicationId}/status/`, {
-    status,
-    statusReason,
-    notes,
-  });
+  const response = await api.post<{ application: AdminApplication; emailSent: boolean }>(
+    `/admin/applications/${applicationId}/status/`,
+    { status, statusReason, notes },
+  );
   return response.data;
 }

@@ -3,11 +3,32 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   CareerJob,
-  TrackingApplication,
   getCareerJobs,
   sendCareerApplication,
   trackCareerApplication,
+  TrackingApplication,
 } from "../lib/api";
+
+const categories = ["Development", "Internship", "Testing", "Management", "Designing", "SEO"];
+
+const openings: CareerJob[] = [
+  { id: 1, title: "Android Developer", category: "Development", experience: "1-4 years", type: "Full time" },
+  { id: 2, title: "React Native Developer", category: "Development", experience: "1-4 years", type: "Full time" },
+  { id: 3, title: "Angular Developer", category: "Development", experience: "1-4 years", type: "Full time" },
+  { id: 4, title: "Node.js Developer", category: "Development", experience: "2-5 years", type: "Full time" },
+  { id: 5, title: "Full Stack Developer", category: "Development", experience: "2-6 years", type: "Full time" },
+  { id: 6, title: "Mobile App Developer", category: "Development", experience: "1-5 years", type: "Full time" },
+  { id: 7, title: "Principal Architect", category: "Management", experience: "8+ years", type: "Full time" },
+  { id: 8, title: "Netsuite Developer", category: "Development", experience: "2-5 years", type: "Full time" },
+  { id: 9, title: "WordPress Developer", category: "Development", experience: "1-4 years", type: "Full time" },
+  { id: 10, title: "SharePoint Developer", category: "Development", experience: "2-5 years", type: "Full time" },
+  { id: 11, title: "MERN Stack Developer", category: "Development", experience: "1-5 years", type: "Full time" },
+  { id: 12, title: "Python Developer", category: "Development", experience: "1-5 years", type: "Full time" },
+  { id: 13, title: "Software Testing Engineer", category: "Testing", experience: "1-4 years", type: "Full time" },
+  { id: 14, title: "UI/UX Designer", category: "Designing", experience: "1-4 years", type: "Full time" },
+  { id: 15, title: "SEO Executive", category: "SEO", experience: "0-3 years", type: "Full time" },
+  { id: 16, title: "Software Developer Intern", category: "Internship", experience: "Fresher", type: "Internship" },
+];
 
 const careerFeatures = [
   {
@@ -33,19 +54,21 @@ const careerFeatures = [
 ];
 
 export function Careers() {
-  const [activeCategory, setActiveCategory] = useState("");
-  const [jobs, setJobs] = useState<CareerJob[]>([]);
+  const [jobs, setJobs] = useState<CareerJob[]>(openings);
+  const [activeCategory, setActiveCategory] = useState("Development");
+  const [loadingJobs, setLoadingJobs] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState("");
   const [detailJobId, setDetailJobId] = useState("");
-  const [loadingJobs, setLoadingJobs] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [trackingResult, setTrackingResult] = useState<TrackingApplication | null>(null);
+  const [latestTrackingId, setLatestTrackingId] = useState("");
   const [trackingLoading, setTrackingLoading] = useState(false);
-  const [latestTrackingId, setLatestTrackingId] = useState<string | null>(null);
+  const [trackingResult, setTrackingResult] = useState<TrackingApplication | null>(null);
 
-  const categories = useMemo(() => Array.from(new Set(jobs.map((job) => job.category))).filter(Boolean), [jobs]);
-  const fullTimeOpenings = useMemo(() => jobs.filter((job) => job.type === "Full time").length, [jobs]);
-  const detailJob = useMemo(() => jobs.find((job) => String(job.id) === detailJobId), [detailJobId, jobs]);
+  const fullTimeOpenings = useMemo(() => jobs.filter((opening) => opening.type === "Full time").length, [jobs]);
+  const detailJob = useMemo(
+    () => jobs.find((opening) => String(opening.id) === detailJobId) ?? null,
+    [detailJobId, jobs],
+  );
 
   const filteredOpenings = useMemo(
     () => jobs.filter((opening) => opening.category === activeCategory),
@@ -54,15 +77,18 @@ export function Careers() {
 
   useEffect(() => {
     let mounted = true;
+    setLoadingJobs(true);
 
     getCareerJobs()
       .then((items) => {
         if (!mounted) return;
-        setJobs(items);
-        setActiveCategory(items[0]?.category ?? "");
+        if (items.length > 0) {
+          setJobs(items);
+          setActiveCategory(items[0].category);
+        }
       })
       .catch(() => {
-        toast.error("Could not load current openings. Please check the careers API.");
+        toast.error("Could not load current openings. Showing default roles for now.");
       })
       .finally(() => {
         if (mounted) setLoadingJobs(false);

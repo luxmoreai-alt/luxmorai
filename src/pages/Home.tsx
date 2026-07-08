@@ -19,6 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { industries } from "../data/industries";
+import { useSeo } from "../lib/seo";
 
 const services = [
   {
@@ -139,6 +140,12 @@ const reveal = {
 export function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const activeHeroSlide = heroSlides[activeSlide];
+
+  useSeo({
+    title: "Luxmor AI | AI Solutions, Custom Software, CRM & Automation for Businesses",
+    description:
+      "Luxmor AI builds AI solutions, custom software, CRM systems, workflow automation, and scalable digital products for growing businesses.",
+  });
 
   useEffect(() => {
     const timer = window.setInterval(() => {
