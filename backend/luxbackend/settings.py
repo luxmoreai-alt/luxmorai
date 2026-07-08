@@ -165,7 +165,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 FRONTEND_ORIGINS = os.environ.get(
     'FRONTEND_ORIGINS',
-    'http://localhost:5173,http://127.0.0.1:5173,http://192.168.0.3:5173',
+    (
+        'http://localhost:5173,'
+        'http://127.0.0.1:5173,'
+        'http://192.168.0.3:5173,'
+        'https://luxmorai.com,'
+        'https://www.luxmorai.com,'
+        'https://luxmorai.vercel.app,'
+        '.vercel.app'
+    ),
 ).split(',')
 
 FRONTEND_SITE_URL = os.environ.get('FRONTEND_SITE_URL', FRONTEND_ORIGINS[-1]).rstrip('/')

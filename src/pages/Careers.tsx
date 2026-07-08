@@ -8,6 +8,7 @@ import {
   trackCareerApplication,
   TrackingApplication,
 } from "../lib/api";
+import { Link } from "react-router-dom";
 
 const categories = ["Development", "Internship", "Testing", "Management", "Designing", "SEO"];
 
@@ -222,9 +223,9 @@ export function Careers() {
               <a className="secondary-button" href="#career-openings">
                 View Openings
               </a>
-              <a className="secondary-button" href="http://127.0.0.1:8000/admin/" target="_blank" rel="noreferrer">
+              <Link className="secondary-button" to="/admin">
                 Admin Panel
-              </a>
+              </Link>
             </div>
           </div>
           <div className="career-hero-media">
