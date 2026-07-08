@@ -23,11 +23,16 @@ export function Footer() {
     <footer className="site-footer text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_0.8fr_1fr] lg:px-8">
         <div>
-          <img className="mb-5 h-16 w-56 object-contain object-left" src="/luxmorai-logo1.png" alt="Luxmorai" />
+          <h3 className="footer-brand-title">Luxmorai Technologies</h3>
           <p className="max-w-md text-sm leading-7 text-slate-300">
             Luxmorai Technologies Pvt Ltd designs scalable digital products for businesses that need reliable software,
             practical AI, and measurable growth.
           </p>
+          <div className="footer-brand-pills" aria-label="Luxmorai capabilities">
+            <span>AI Products</span>
+            <span>Cloud Apps</span>
+            <span>Growth Systems</span>
+          </div>
         </div>
         <div>
           <h3 className="footer-title">Services</h3>
