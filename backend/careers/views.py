@@ -1,7 +1,8 @@
 import json
 import re
+from urllib.parse import quote
 
-from django.http import JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
@@ -37,7 +38,7 @@ def serialize_job(job):
 
 
 def serialize_application(application, request):
-    resume_url = request.build_absolute_uri(application.resume.url) if application.resume else ""
+    resume_url = request.build_absolute_uri(f"/api/admin/applications/{application.id}/resume/")
     return {
         "id": application.id,
         "applicationNumber": get_application_number(application),
@@ -127,6 +128,41 @@ def admin_applications(request):
     return JsonResponse({"applications": [serialize_application(application, request) for application in applications_list]})
 
 
+@require_http_methods(["GET"])
+def admin_application_resume(request, application_id):
+    application = Application.objects.filter(id=application_id).first()
+    if not application:
+        raise Http404("Application not found.")
+
+    filename = application.resume_filename or (application.resume.name.split("/")[-1] if application.resume else "resume")
+    content_type = application.resume_content_type or "application/octet-stream"
+
+    if application.resume_file:
+        content = bytes(application.resume_file)
+    elif application.resume:
+        try:
+            application.resume.open("rb")
+            content = application.resume.read()
+        except FileNotFoundError:
+            return JsonResponse(
+                {
+                    "error": "Resume file is no longer available. Ask the candidate to submit the application again."
+                },
+                status=404,
+            )
+        finally:
+            try:
+                application.resume.close()
+            except Exception:
+                pass
+    else:
+        return JsonResponse({"error": "No resume uploaded for this application."}, status=404)
+
+    response = HttpResponse(content, content_type=content_type)
+    response["Content-Disposition"] = f'inline; filename="{quote(filename)}"'
+    return response
+
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def admin_application_status(request, application_id):
@@ -167,6 +203,8 @@ def applications(request):
     resume = request.FILES.get("resume")
     if not resume:
         return JsonResponse({"error": "Resume is required."}, status=400)
+    resume_content = resume.read()
+    resume.seek(0)
 
     required_fields = [
         "name",
@@ -200,6 +238,9 @@ def applications(request):
         career_gap=request.POST.get("careerGap", ""),
         message=request.POST.get("message", ""),
         resume=resume,
+        resume_file=resume_content,
+        resume_filename=resume.name,
+        resume_content_type=getattr(resume, "content_type", "") or "application/octet-stream",
     )
     email_sent = False
     try:

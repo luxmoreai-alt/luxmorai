@@ -10,6 +10,7 @@ urlpatterns = [
     path("admin/jobs/", views.admin_jobs, name="admin_jobs"),
     path("admin/jobs/<int:job_id>/toggle/", views.admin_job_toggle, name="admin_job_toggle"),
     path("admin/applications/", views.admin_applications, name="admin_applications"),
+    path("admin/applications/<int:application_id>/resume/", views.admin_application_resume, name="admin_application_resume"),
     path(
         "admin/applications/<int:application_id>/status/",
         views.admin_application_status,
