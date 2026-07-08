@@ -2030,94 +2030,99 @@ textarea {
   transform: translateY(-1px);
 }
 
-.career-openings-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.25rem;
-}
-
-.career-opening-card {
-  display: grid;
-  min-height: 29rem;
-  overflow: hidden;
-  border: 1px solid #dbe3ee;
-  border-radius: 6px;
-  background: #ffffff;
-  text-align: center;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.04);
-}
-
-.career-opening-icon {
-  display: flex;
-  height: 16.5rem;
-  align-items: center;
-  justify-content: center;
-}
-
-.career-opening-icon svg {
-  box-sizing: content-box;
-  width: 7rem;
-  height: 7rem;
-  border: 2px solid #0b5cad;
-  border-radius: 999px;
-  color: #0b5cad;
-  padding: 3.25rem;
-}
-
-.career-opening-card h3 {
-  align-self: start;
-  padding: 0 1rem;
-  color: #111827;
-  font-size: clamp(1.25rem, 2vw, 1.55rem);
-  font-weight: 900;
-  line-height: 1.25;
-}
-
-.career-opening-card p {
-  margin-top: 0.65rem;
-  color: #64748b;
-  font-size: 0.92rem;
-  font-weight: 700;
-}
-
-.career-opening-card span {
-  display: -webkit-box;
-  margin: 0.75rem 1.25rem 1rem;
-  overflow: hidden;
-  color: #475569;
-  font-size: 0.88rem;
-  font-weight: 600;
-  line-height: 1.55;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.career-opening-card button {
-  align-self: end;
-  border: 0;
-  border-top: 1px solid #dbe3ee;
-  background: #f8fafc;
-  color: white;
-  cursor: pointer;
-  padding: 1rem;
-}
-
-.career-opening-card button::before {
+.career-track-jump {
   display: inline-flex;
-  min-height: 2.9rem;
+  min-height: 2.75rem;
   align-items: center;
   justify-content: center;
+  margin-top: 1.2rem;
+  border: 1px solid #0b5cad;
   border-radius: 6px;
   background: #0b5cad;
-  padding: 0 1.35rem;
-  color: white;
-  font-size: 1rem;
+  color: #ffffff;
+  padding: 0 1.1rem;
+  font-size: 0.92rem;
   font-weight: 850;
-  content: "More Details";
+  transition:
+    background 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
 }
 
-.career-opening-card button {
-  font-size: 0;
+.career-track-jump:hover {
+  background: #084a8e;
+  box-shadow: 0 12px 28px rgba(11, 92, 173, 0.18);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.career-openings-grid {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.career-opening-row {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1.1fr) minmax(10rem, 0.65fr) minmax(10rem, 0.55fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 6.6rem;
+  border: 1px solid #dbe3ee;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 1.35rem clamp(1rem, 3vw, 2rem);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.05);
+}
+
+.career-opening-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.career-opening-title svg {
+  flex: 0 0 auto;
+  color: #0b5cad;
+}
+
+.career-opening-row h3 {
+  min-width: 0;
+  color: #073c8c;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 850;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.career-opening-row p,
+.career-opening-row span {
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.career-opening-row button {
+  min-height: 3rem;
+  border: 0;
+  border-radius: 6px;
+  background: #16c7a4;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 1.05rem;
+  font-size: 0.98rem;
+  font-weight: 850;
+  transition:
+    background 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.career-opening-row button:hover {
+  background: #0ea98b;
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.22);
+  transform: translateY(-1px);
 }
 
 .career-empty-state {
@@ -2699,18 +2704,15 @@ textarea {
     margin-bottom: 2.5rem;
   }
 
-  .career-opening-card {
-    min-height: 24rem;
+  .career-opening-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 0.65rem;
+    border-radius: 14px;
   }
 
-  .career-opening-icon {
-    height: 13rem;
-  }
-
-  .career-opening-icon svg {
-    width: 5rem;
-    height: 5rem;
-    padding: 2.5rem;
+  .career-opening-row button {
+    width: fit-content;
   }
 }
 

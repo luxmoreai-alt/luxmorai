@@ -58,9 +58,9 @@ export function Footer() {
                 <span><strong className="block text-white">{office.name}</strong>{office.address}</span>
               </p>
             ))}
-            <a className="flex gap-3 hover:text-white" href="mailto:luxmoreai@gmail.com">
+            <a className="flex gap-3 hover:text-white" href="mailto:info@luxmorai.com">
               <Mail className="mt-0.5 h-4 w-4 text-amber-400" />
-              luxmoreai@gmail.com
+              info@luxmorai.com
             </a>
           </div>
         </div>

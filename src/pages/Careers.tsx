@@ -253,6 +253,9 @@ export function Careers() {
           <div className="mx-auto mb-10 max-w-3xl text-center">
             <p className="eyebrow">Current Openings</p>
             <h2 className="section-title mx-auto">Current Openings</h2>
+            <a className="career-track-jump" href="#career-track">
+              Track Application
+            </a>
           </div>
 
           <div className="career-tabs" role="tablist" aria-label="Career categories">
@@ -274,18 +277,17 @@ export function Careers() {
               <p className="career-empty-state">Currently no openings are posted. Please check back soon.</p>
             )}
             {filteredOpenings.map((opening) => (
-              <article className="career-opening-card" key={opening.id}>
-                <div className="career-opening-icon">
-                  <BriefcaseBusiness className="h-20 w-20" />
+              <article className="career-opening-row" key={opening.id}>
+                <div className="career-opening-title">
+                  <BriefcaseBusiness className="h-5 w-5" />
+                  <h3>{opening.title}</h3>
                 </div>
-                <h3>{opening.title}</h3>
-                <p>
+                <p>{opening.location || "Location to be shared"}</p>
+                <span>
                   {opening.experience} | {opening.type}
-                </p>
-                {opening.location && <p>{opening.location}</p>}
-                {opening.description && <span>{opening.description}</span>}
+                </span>
                 <button type="button" onClick={() => selectJob(opening)}>
-                  More Details
+                  Apply
                 </button>
               </article>
             ))}
