@@ -12,25 +12,6 @@ import { Link } from "react-router-dom";
 
 const categories = ["Development", "Internship", "Testing", "Management", "Designing", "SEO"];
 
-const openings: CareerJob[] = [
-  { id: 1, title: "Android Developer", category: "Development", experience: "1-4 years", type: "Full time" },
-  { id: 2, title: "React Native Developer", category: "Development", experience: "1-4 years", type: "Full time" },
-  { id: 3, title: "Angular Developer", category: "Development", experience: "1-4 years", type: "Full time" },
-  { id: 4, title: "Node.js Developer", category: "Development", experience: "2-5 years", type: "Full time" },
-  { id: 5, title: "Full Stack Developer", category: "Development", experience: "2-6 years", type: "Full time" },
-  { id: 6, title: "Mobile App Developer", category: "Development", experience: "1-5 years", type: "Full time" },
-  { id: 7, title: "Principal Architect", category: "Management", experience: "8+ years", type: "Full time" },
-  { id: 8, title: "Netsuite Developer", category: "Development", experience: "2-5 years", type: "Full time" },
-  { id: 9, title: "WordPress Developer", category: "Development", experience: "1-4 years", type: "Full time" },
-  { id: 10, title: "SharePoint Developer", category: "Development", experience: "2-5 years", type: "Full time" },
-  { id: 11, title: "MERN Stack Developer", category: "Development", experience: "1-5 years", type: "Full time" },
-  { id: 12, title: "Python Developer", category: "Development", experience: "1-5 years", type: "Full time" },
-  { id: 13, title: "Software Testing Engineer", category: "Testing", experience: "1-4 years", type: "Full time" },
-  { id: 14, title: "UI/UX Designer", category: "Designing", experience: "1-4 years", type: "Full time" },
-  { id: 15, title: "SEO Executive", category: "SEO", experience: "0-3 years", type: "Full time" },
-  { id: 16, title: "Software Developer Intern", category: "Internship", experience: "Fresher", type: "Internship" },
-];
-
 const careerFeatures = [
   {
     icon: Rocket,
@@ -55,7 +36,7 @@ const careerFeatures = [
 ];
 
 export function Careers() {
-  const [jobs, setJobs] = useState<CareerJob[]>(openings);
+  const [jobs, setJobs] = useState<CareerJob[]>([]);
   const [activeCategory, setActiveCategory] = useState("Development");
   const [loadingJobs, setLoadingJobs] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState("");
@@ -83,13 +64,12 @@ export function Careers() {
     getCareerJobs()
       .then((items) => {
         if (!mounted) return;
-        if (items.length > 0) {
-          setJobs(items);
-          setActiveCategory(items[0].category);
-        }
+        setJobs(items);
+        setActiveCategory(items[0]?.category ?? "Development");
       })
       .catch(() => {
-        toast.error("Could not load current openings. Showing default roles for now.");
+        setJobs([]);
+        toast.error("Could not load current openings. Please try again later.");
       })
       .finally(() => {
         if (mounted) setLoadingJobs(false);
@@ -291,7 +271,7 @@ export function Careers() {
           <div className="career-openings-grid">
             {loadingJobs && <p className="career-empty-state">Loading current openings...</p>}
             {!loadingJobs && jobs.length === 0 && (
-              <p className="career-empty-state">No active openings are posted yet. Add jobs from the admin panel.</p>
+              <p className="career-empty-state">Currently no openings are posted. Please check back soon.</p>
             )}
             {filteredOpenings.map((opening) => (
               <article className="career-opening-card" key={opening.id}>
