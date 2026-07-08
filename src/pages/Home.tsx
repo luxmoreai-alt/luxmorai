@@ -19,7 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { industries } from "../data/industries";
-import { useSeo } from "../lib/seo";
+import { pageSchema, siteSchema, useSeo } from "../lib/seo";
 
 const services = [
   {
@@ -145,6 +145,54 @@ export function Home() {
     title: "Luxmor AI | AI Solutions, Custom Software, CRM & Automation for Businesses",
     description:
       "Luxmor AI builds AI solutions, custom software, CRM systems, workflow automation, and scalable digital products for growing businesses.",
+    structuredData: [
+      siteSchema,
+      pageSchema(
+        "/",
+        "Luxmor AI | AI Solutions, Custom Software, CRM & Automation for Businesses",
+        "Luxmor AI builds AI solutions, custom software, CRM systems, workflow automation, and scalable digital products for growing businesses.",
+      ),
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://www.luxmorai.com/#website",
+        name: "Luxmorai Technologies",
+        url: "https://www.luxmorai.com",
+        publisher: {
+          "@id": "https://www.luxmorai.com/#organization",
+        },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "What does Luxmorai Technologies do?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Luxmorai Technologies builds AI solutions, custom software, CRM systems, workflow automation, mobile apps, web platforms, cloud systems, and digital products for businesses.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Where is Luxmorai Technologies located?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Luxmorai Technologies has offices in Hyderabad, Bengaluru, and Chennai, and serves clients across India and global markets.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "How can I contact Luxmorai Technologies?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You can contact Luxmorai Technologies at info@luxmorai.com, call +91 9884050511, or use the contact page at https://www.luxmorai.com/contact.",
+            },
+          },
+        ],
+      },
+    ],
   });
 
   useEffect(() => {

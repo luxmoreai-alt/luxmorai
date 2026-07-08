@@ -1,4 +1,4 @@
-import { ArrowUpRight, Mail, MapPin } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const links = ["AI & ML", "Software Development", "Mobile Apps", "Website Development", "UI/UX Design", "Digital Marketing"];
@@ -61,6 +61,10 @@ export function Footer() {
             <a className="flex gap-3 hover:text-white" href="mailto:info@luxmorai.com">
               <Mail className="mt-0.5 h-4 w-4 text-amber-400" />
               info@luxmorai.com
+            </a>
+            <a className="flex gap-3 hover:text-white" href="tel:+919884050511">
+              <Phone className="mt-0.5 h-4 w-4 text-amber-400" />
+              +91 9884050511
             </a>
           </div>
         </div>

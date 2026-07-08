@@ -21,6 +21,7 @@ import {
   toggleAdminJob,
   updateAdminApplicationStatus,
 } from "../lib/api";
+import { useSeo } from "../lib/seo";
 
 const statuses = ["new", "reviewing", "shortlisted", "rejected", "hired"];
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? "careers@admin.com";
@@ -28,6 +29,13 @@ const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? "Careers@admin@202
 const ADMIN_AUTH_KEY = "luxmorai-admin-authenticated";
 
 export function Admin() {
+  useSeo({
+    title: "Careers Admin | Luxmorai Technologies",
+    description: "Private careers administration panel for Luxmorai Technologies.",
+    path: "/admin",
+    robots: "noindex, nofollow",
+  });
+
   const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem(ADMIN_AUTH_KEY) === "true");
   const [jobs, setJobs] = useState<CareerJob[]>([]);
   const [applications, setApplications] = useState<AdminApplication[]>([]);

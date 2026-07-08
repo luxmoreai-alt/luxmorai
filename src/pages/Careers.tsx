@@ -8,6 +8,7 @@ import {
   trackCareerApplication,
   TrackingApplication,
 } from "../lib/api";
+import { pageSchema, useSeo } from "../lib/seo";
 
 const careerFeatures = [
   {
@@ -33,6 +34,18 @@ const careerFeatures = [
 ];
 
 export function Careers() {
+  useSeo({
+    title: "Careers at Luxmorai Technologies | Software, AI, Cloud & QA Jobs",
+    description:
+      "Explore careers at Luxmorai Technologies. Apply for software development, AI, cloud, mobile, testing, design, management, and SEO roles.",
+    path: "/careers",
+    structuredData: pageSchema(
+      "/careers",
+      "Careers at Luxmorai Technologies | Software, AI, Cloud & QA Jobs",
+      "Explore careers at Luxmorai Technologies. Apply for software development, AI, cloud, mobile, testing, design, management, and SEO roles.",
+    ),
+  });
+
   const [jobs, setJobs] = useState<CareerJob[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState("");

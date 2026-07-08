@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { blogPosts, getBlogPostBySlug } from "../data/blogPosts";
-import { useSeo } from "../lib/seo";
+import { pageSchema, useSeo } from "../lib/seo";
 
 export function BlogPost() {
   const { slug } = useParams();
@@ -11,6 +11,33 @@ export function BlogPost() {
     title: post ? `${post.title} | Luxmor AI Blog` : "Blog | Luxmor AI",
     description: post?.description ?? "Read Luxmor AI insights on AI, CRM, automation, and custom software development.",
     path: post ? `/blog/${post.slug}` : "/blog",
+    image: post?.image,
+    type: "article",
+    structuredData: post
+      ? [
+          pageSchema(`/blog/${post.slug}`, `${post.title} | Luxmor AI Blog`, post.description),
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: post.title,
+            description: post.description,
+            image: post.image,
+            author: {
+              "@type": "Organization",
+              name: "Luxmorai Technologies Pvt Ltd",
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Luxmorai Technologies Pvt Ltd",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://www.luxmorai.com/luxmorai-logo.png",
+              },
+            },
+            mainEntityOfPage: `https://www.luxmorai.com/blog/${post.slug}`,
+          },
+        ]
+      : undefined,
   });
 
   if (!post) {

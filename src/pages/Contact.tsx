@@ -1,4 +1,4 @@
-import { Send } from "lucide-react";
+import { Mail, Phone, Send } from "lucide-react";
 import { FormEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Section } from "../components/Section";
@@ -58,24 +58,42 @@ export function Contact() {
       title="Ready to transform your idea into scalable digital reality?"
       intro="Share a few details and the Luxmorai team can shape the right product, service, or technology plan."
     >
-      <form className="contact-form" onSubmit={onSubmit}>
-        <input name="name" required placeholder="Name" />
-        <input name="email" required type="email" placeholder="Email Address" />
-        <input name="phone" required placeholder="Phone Number" />
-        <select name="service" required defaultValue="">
-          <option value="" disabled>
-            Select Service
-          </option>
-          {services.map((service) => (
-            <option key={service.slug}>{service.shortTitle}</option>
-          ))}
-        </select>
-        <textarea name="message" required placeholder="Message" rows={5} />
-        <button className="primary-button light w-fit" disabled={loading} type="submit">
-          <Send className="h-4 w-4" />
-          {loading ? "Sending..." : "Submit Inquiry"}
-        </button>
-      </form>
+      <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="rounded border border-white/15 bg-white/10 p-6 text-white">
+          <h2 className="text-2xl font-black">Talk to Luxmorai</h2>
+          <p className="mt-3 text-sm leading-7 text-slate-200">
+            Reach our team for software, AI, website, mobile app, CRM, automation, and cloud project discussions.
+          </p>
+          <div className="mt-6 grid gap-4 text-sm">
+            <a className="flex items-center gap-3 hover:text-cyan-200" href="tel:+919884050511">
+              <Phone className="h-4 w-4 text-amber-300" />
+              +91 9884050511
+            </a>
+            <a className="flex items-center gap-3 hover:text-cyan-200" href="mailto:info@luxmorai.com">
+              <Mail className="h-4 w-4 text-amber-300" />
+              info@luxmorai.com
+            </a>
+          </div>
+        </div>
+        <form className="contact-form" onSubmit={onSubmit}>
+          <input name="name" required placeholder="Name" />
+          <input name="email" required type="email" placeholder="Email Address" />
+          <input name="phone" required placeholder="Phone Number" />
+          <select name="service" required defaultValue="">
+            <option value="" disabled>
+              Select Service
+            </option>
+            {services.map((service) => (
+              <option key={service.slug}>{service.shortTitle}</option>
+            ))}
+          </select>
+          <textarea name="message" required placeholder="Message" rows={5} />
+          <button className="primary-button light w-fit" disabled={loading} type="submit">
+            <Send className="h-4 w-4" />
+            {loading ? "Sending..." : "Submit Inquiry"}
+          </button>
+        </form>
+      </div>
     </Section>
   );
 }
