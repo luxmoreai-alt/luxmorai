@@ -3,6 +3,7 @@ import {
   CheckCircle2,
   Download,
   FileText,
+  LogOut,
   Mail,
   Phone,
   Plus,
@@ -22,8 +23,12 @@ import {
 } from "../lib/api";
 
 const statuses = ["new", "reviewing", "shortlisted", "rejected", "hired"];
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? "careers@admin.com";
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? "Careers@admin@2026";
+const ADMIN_AUTH_KEY = "luxmorai-admin-authenticated";
 
 export function Admin() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem(ADMIN_AUTH_KEY) === "true");
   const [jobs, setJobs] = useState<CareerJob[]>([]);
   const [applications, setApplications] = useState<AdminApplication[]>([]);
   const [activeView, setActiveView] = useState<"jobs" | "applications">("jobs");
@@ -42,6 +47,29 @@ export function Admin() {
   const openJobs = jobs.length;
   const newApplications = applications.filter((application) => application.status === "new").length;
 
+  function submitLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const email = String(data.get("email") ?? "").trim();
+    const password = String(data.get("password") ?? "");
+
+    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+      toast.error("Invalid admin credentials.");
+      return;
+    }
+
+    localStorage.setItem(ADMIN_AUTH_KEY, "true");
+    setIsAuthenticated(true);
+    toast.success("Admin login successful.");
+  }
+
+  function logout() {
+    localStorage.removeItem(ADMIN_AUTH_KEY);
+    setIsAuthenticated(false);
+    setJobs([]);
+    setApplications([]);
+  }
+
   async function loadDashboard() {
     setLoading(true);
     try {
@@ -57,8 +85,10 @@ export function Admin() {
   }
 
   useEffect(() => {
-    loadDashboard();
-  }, []);
+    if (isAuthenticated) {
+      loadDashboard();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     setStatus(selectedApplication?.status ?? "new");
@@ -115,6 +145,30 @@ export function Admin() {
     }
   }
 
+  if (!isAuthenticated) {
+    return (
+      <section className="admin-page">
+        <div className="admin-login-shell">
+          <form className="admin-login-card" onSubmit={submitLogin}>
+            <p className="eyebrow">Careers Admin</p>
+            <h1>Admin Login</h1>
+            <label>
+              Email
+              <input name="email" required type="email" autoComplete="username" />
+            </label>
+            <label>
+              Password
+              <input name="password" required type="password" autoComplete="current-password" />
+            </label>
+            <button className="primary-button" type="submit">
+              Login
+            </button>
+          </form>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="admin-page">
       <div className="admin-shell">
@@ -124,9 +178,14 @@ export function Admin() {
             <h1>Manage job posts and applicants</h1>
             <p>Publish roles, review candidate details, download resumes, and track each application from one panel.</p>
           </div>
-          <button className="admin-icon-button" type="button" onClick={loadDashboard} aria-label="Refresh admin data">
-            <RefreshCw />
-          </button>
+          <div className="admin-hero-actions">
+            <button className="admin-icon-button" type="button" onClick={loadDashboard} aria-label="Refresh admin data">
+              <RefreshCw />
+            </button>
+            <button className="admin-icon-button" type="button" onClick={logout} aria-label="Logout">
+              <LogOut />
+            </button>
+          </div>
         </div>
 
         <div className="admin-stats">

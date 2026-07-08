@@ -3971,6 +3971,54 @@ textarea {
   margin: 0 auto;
 }
 
+.admin-login-shell {
+  display: grid;
+  min-height: calc(100svh - 9rem);
+  place-items: center;
+}
+
+.admin-login-card {
+  display: grid;
+  width: min(100%, 26rem);
+  gap: 1rem;
+  border: 1px solid #dbe5ef;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: clamp(1.2rem, 4vw, 2rem);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+.admin-login-card h1 {
+  color: #071528;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.admin-login-card label {
+  display: grid;
+  gap: 0.45rem;
+  color: #34465b;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.admin-login-card input {
+  width: 100%;
+  border: 1px solid #c7d5e5;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 0.82rem 0.9rem;
+  outline: none;
+}
+
+.admin-login-card input:focus {
+  border-color: #0b75bd;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.14);
+}
+
 .admin-hero {
   display: flex;
   align-items: center;
@@ -3996,6 +4044,12 @@ textarea {
   margin-top: 0.7rem;
   color: #52647a;
   line-height: 1.65;
+}
+
+.admin-hero-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.55rem;
 }
 
 .admin-icon-button {
