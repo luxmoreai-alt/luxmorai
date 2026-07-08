@@ -1,9 +1,22 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "rm -rf node_modules && npm ci",
+  "installCommand": "npm ci && python -m pip install -r requirements.txt",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "backend/luxbackend/wsgi.py": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/backend/luxbackend/wsgi.py"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/backend/luxbackend/wsgi.py"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
