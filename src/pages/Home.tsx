@@ -240,10 +240,10 @@ export function Home() {
         <div className="home-container">
           <motion.div className="home-heading home-heading-split" {...reveal}>
             <div>
-              <p className="home-eyebrow">What we do</p>
-              <h2>Everything you need to build, launch, and improve.</h2>
+              <p className="home-eyebrow">What we build</p>
+              <h2>A complete platform for digital progress.</h2>
             </div>
-            <p>We bring strategy, design, engineering, data, and infrastructure together so you can move from idea to impact with fewer handoffs.</p>
+            <p>From applied AI to dependable digital systems, one collaborative team brings strategy, design, engineering, and growth together.</p>
           </motion.div>
           <div className="home-service-grid">
             {services.map((service, index) => (
@@ -258,6 +258,10 @@ export function Home() {
               </motion.article>
             ))}
           </div>
+          <motion.div className="home-build-footer" {...reveal}>
+            <p><span>One connected team</span> Clear thinking, careful delivery, and useful technology at every stage.</p>
+            <Link to="/services">Explore all capabilities <ArrowRight /></Link>
+          </motion.div>
         </div>
       </section>
 

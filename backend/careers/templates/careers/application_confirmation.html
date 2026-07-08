@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <body style="margin:0;background:#eef4fa;padding:24px 10px;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:760px;background:#ffffff;border:1px solid #dbe5ef;">
+            <tr>
+              <td style="padding:22px 30px;background:#ffffff;">
+                <img src="cid:{{ logo_cid }}" alt="Luxmorai Technologies Pvt Ltd" width="220" style="display:block;max-width:220px;height:auto;border:0;">
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#0b5cad;padding:38px 30px;color:#ffffff;">
+                <p style="margin:0 0 10px;color:#bde7ff;font-size:13px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;">Careers at Luxmorai</p>
+                <h1 style="margin:0;font-size:34px;line-height:1.2;font-weight:bold;">Your application has been received</h1>
+                <p style="margin:12px 0 0;color:#e7f6ff;font-size:17px;line-height:1.6;">Build your career with a team focused on practical digital products, cloud, AI, and software delivery.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:34px 30px;">
+                <p style="margin:0 0 16px;font-size:16px;line-height:1.7;">Hi {{ application.name }},</p>
+                <p style="margin:0 0 16px;font-size:16px;line-height:1.7;">Thank you for your interest in pursuing a career with Luxmorai Technologies Pvt Ltd.</p>
+                <p style="margin:0 0 16px;font-size:16px;line-height:1.7;">We have received your application for <strong>{{ application.role }}</strong> and are currently reviewing the details submitted by you.</p>
+                <p style="margin:0 0 18px;font-size:16px;line-height:1.7;">Kindly await further information from us on your candidature.</p>
+
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0;border:1px solid #cbdff3;background:#f6fbff;">
+                  <tr>
+                    <td style="padding:20px;">
+                      <p style="margin:0;color:#52647a;font-size:12px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;">Application Number</p>
+                      <p style="margin:8px 0 0;color:#071528;font-size:34px;font-weight:bold;line-height:1;">{{ application_number }}</p>
+                    </td>
+                  </tr>
+                </table>
+
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 22px;">
+                  <tr>
+                    <td style="padding:15px 18px;border-left:4px solid #0b5cad;background:#eef7ff;">
+                      <p style="margin:0;color:#52647a;font-size:13px;font-weight:bold;text-transform:uppercase;">Current Status</p>
+                      <p style="margin:7px 0 0;color:#0b5cad;font-size:22px;font-weight:bold;text-transform:capitalize;">{{ application.status }}</p>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin:0 0 18px;font-size:16px;line-height:1.7;">Use this application number with your email and phone number to track the latest status.</p>
+                <a href="{{ track_url }}" style="display:inline-block;background:#0b5cad;color:#ffffff;text-decoration:none;padding:14px 20px;font-size:16px;font-weight:bold;">Track Application</a>
+
+                <p style="margin:26px 0 0;font-size:15px;line-height:1.7;"><strong>Important:</strong> Kindly DO NOT share your personal information, application number, OTP, login credentials, passwords, or assessment details with anyone. These are sensitive and confidential details.</p>
+
+                <p style="margin:22px 0 0;font-size:16px;line-height:1.7;">All the best!</p>
+                <p style="margin:16px 0 0;font-size:15px;line-height:1.6;">Regards,<br><strong>Recruitment Team</strong><br>Luxmorai Technologies Pvt Ltd</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:26px 30px;background:#f7fbff;border-top:1px solid #e3edf7;">
+                <p style="margin:0 0 14px;font-size:13px;line-height:1.7;color:#374151;"><strong>Please note:</strong> Unless a formal employment offer is provided to a candidate by Luxmorai Technologies Pvt Ltd, participation in any interview, screening, discussion, or recruitment process shall not be considered an offer of employment.</p>
+                <p style="margin:0 0 14px;font-size:13px;line-height:1.7;color:#374151;">Any employment decision or offer shall be subject to business needs, role requirements, verification checks, interview performance, and internal approval processes. Mere clearance of any process does not by itself create an offer of employment.</p>
+                <p style="margin:0 0 14px;font-size:13px;line-height:1.7;color:#374151;"><strong>Fraud alert:</strong> Luxmorai has not authorized any agency, company, or individual to collect money or request payment in exchange for a job, interview, offer letter, registration, training, equipment, or background verification. If anyone asks for money using Luxmorai's name, please treat it as suspicious and contact us directly.</p>
+                <p style="margin:0 0 14px;font-size:13px;line-height:1.7;color:#374151;">Luxmorai is committed to protecting your personal information. Your information will be used only for recruitment, communication, verification, and hiring-related purposes as permitted by applicable law.</p>
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:18px;background:#e5e7eb;">
+                  <tr>
+                    <td align="center" style="padding:15px;">
+                      <a href="{{ careers_url }}" style="color:#0b5cad;font-size:15px;font-weight:bold;text-decoration:none;">View Careers</a>
+                      <span style="color:#94a3b8;padding:0 14px;">|</span>
+                      <a href="{{ contact_url }}" style="color:#0b5cad;font-size:15px;font-weight:bold;text-decoration:none;">Contact Recruitment Team</a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:18px 0 0;color:#64748b;font-size:12px;line-height:1.6;">If the button does not open, visit {{ track_url }} and enter application number {{ application_number }}.</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

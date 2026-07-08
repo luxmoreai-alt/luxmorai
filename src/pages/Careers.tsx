@@ -1,27 +1,13 @@
 import { BriefcaseBusiness, Lightbulb, Rocket, Send, ShieldCheck, Users } from "lucide-react";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-
-const categories = ["Development", "Internship", "Testing", "Management", "Designing", "SEO"];
-
-const openings = [
-  { title: "Android Developer", category: "Development", experience: "1-4 years", type: "Full time" },
-  { title: "React Native Developer", category: "Development", experience: "1-4 years", type: "Full time" },
-  { title: "Angular Developer", category: "Development", experience: "1-4 years", type: "Full time" },
-  { title: "Node.js Developer", category: "Development", experience: "2-5 years", type: "Full time" },
-  { title: "Full Stack Developer", category: "Development", experience: "2-6 years", type: "Full time" },
-  { title: "Mobile App Developer", category: "Development", experience: "1-5 years", type: "Full time" },
-  { title: "Principal Architect", category: "Management", experience: "8+ years", type: "Full time" },
-  { title: "Netsuite Developer", category: "Development", experience: "2-5 years", type: "Full time" },
-  { title: "WordPress Developer", category: "Development", experience: "1-4 years", type: "Full time" },
-  { title: "SharePoint Developer", category: "Development", experience: "2-5 years", type: "Full time" },
-  { title: "MERN Stack Developer", category: "Development", experience: "1-5 years", type: "Full time" },
-  { title: "Python Developer", category: "Development", experience: "1-5 years", type: "Full time" },
-  { title: "Software Testing Engineer", category: "Testing", experience: "1-4 years", type: "Full time" },
-  { title: "UI/UX Designer", category: "Designing", experience: "1-4 years", type: "Full time" },
-  { title: "SEO Executive", category: "SEO", experience: "0-3 years", type: "Full time" },
-  { title: "Software Developer Intern", category: "Internship", experience: "Fresher", type: "Internship" },
-];
+import {
+  CareerJob,
+  TrackingApplication,
+  getCareerJobs,
+  sendCareerApplication,
+  trackCareerApplication,
+} from "../lib/api";
 
 const careerFeatures = [
   {
@@ -47,18 +33,134 @@ const careerFeatures = [
 ];
 
 export function Careers() {
-  const [activeCategory, setActiveCategory] = useState("Development");
-  const fullTimeOpenings = useMemo(() => openings.filter((opening) => opening.type === "Full time").length, []);
+  const [activeCategory, setActiveCategory] = useState("");
+  const [jobs, setJobs] = useState<CareerJob[]>([]);
+  const [selectedJobId, setSelectedJobId] = useState("");
+  const [detailJobId, setDetailJobId] = useState("");
+  const [loadingJobs, setLoadingJobs] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [trackingResult, setTrackingResult] = useState<TrackingApplication | null>(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
+  const [latestTrackingId, setLatestTrackingId] = useState<string | null>(null);
+
+  const categories = useMemo(() => Array.from(new Set(jobs.map((job) => job.category))).filter(Boolean), [jobs]);
+  const fullTimeOpenings = useMemo(() => jobs.filter((job) => job.type === "Full time").length, [jobs]);
+  const detailJob = useMemo(() => jobs.find((job) => String(job.id) === detailJobId), [detailJobId, jobs]);
 
   const filteredOpenings = useMemo(
-    () => openings.filter((opening) => opening.category === activeCategory),
-    [activeCategory],
+    () => jobs.filter((opening) => opening.category === activeCategory),
+    [activeCategory, jobs],
   );
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    let mounted = true;
+
+    getCareerJobs()
+      .then((items) => {
+        if (!mounted) return;
+        setJobs(items);
+        setActiveCategory(items[0]?.category ?? "");
+      })
+      .catch(() => {
+        toast.error("Could not load current openings. Please check the careers API.");
+      })
+      .finally(() => {
+        if (mounted) setLoadingJobs(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    toast.success("Career application captured. Our team will review it.");
-    event.currentTarget.reset();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const jobId = String(data.get("jobId") ?? "");
+    const selectedJob = jobs.find((job) => String(job.id) === jobId);
+
+    if (selectedJob) {
+      data.set("jobId", String(selectedJob.id));
+      data.set("role", selectedJob.title);
+    }
+
+    setSubmitting(true);
+    try {
+      const result = await sendCareerApplication(data);
+      setLatestTrackingId(result.trackingId);
+      toast.success(
+        result.emailSent
+          ? `Application submitted. Confirmation email sent with number ${result.trackingId}.`
+          : `Application submitted. Your application number is ${result.trackingId}.`,
+      );
+      form.reset();
+      setSelectedJobId("");
+    } catch {
+      toast.error("Application could not be submitted. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function onTrackSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    setTrackingLoading(true);
+    setTrackingResult(null);
+
+    try {
+      const application = await trackCareerApplication({
+        trackingId: String(data.get("trackingId") ?? "").replace(/\D/g, ""),
+        email: String(data.get("email") ?? ""),
+        phone: String(data.get("phone") ?? ""),
+      });
+      setTrackingResult(application);
+    } catch {
+      toast.error("No application found with those details.");
+    } finally {
+      setTrackingLoading(false);
+    }
+  }
+
+  function selectJob(opening: CareerJob) {
+    setSelectedJobId(String(opening.id));
+    setDetailJobId(String(opening.id));
+    requestAnimationFrame(() => {
+      document.querySelector("#career-details")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function renderInlineText(text: string) {
+    return text.split(/(\*\*[^*]+\*\*)/g).map((part, index) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={`${part}-${index}`}>{part.slice(2, -2)}</strong>;
+      }
+      return <span key={`${part}-${index}`}>{part}</span>;
+    });
+  }
+
+  function renderJobText(text: string, fallback: string) {
+    const lines = (text || fallback).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+
+    return lines.map((line, index) => {
+      const bullet = line.match(/^[-*•]\s+(.*)$/);
+      const heading = line.endsWith(":") && line.length <= 80;
+
+      if (heading) {
+        return <h3 key={`${line}-${index}`}>{renderInlineText(line.replace(/\*\*/g, ""))}</h3>;
+      }
+
+      if (bullet) {
+        return (
+          <p className="career-detail-bullet" key={`${line}-${index}`}>
+            {renderInlineText(bullet[1])}
+          </p>
+        );
+      }
+
+      return <p key={`${line}-${index}`}>{renderInlineText(line)}</p>;
+    });
   }
 
   return (
@@ -75,7 +177,7 @@ export function Careers() {
             <p className="career-hero-note">Hands-on mentorship <span /> Real product ownership <span /> Room to grow</p>
             <div className="career-hero-metrics" aria-label="Career quick highlights">
               <div className="career-hero-metric">
-                <strong>{openings.length}+</strong>
+                <strong>{jobs.length}</strong>
                 <span>open roles</span>
               </div>
               <div className="career-hero-metric">
@@ -93,6 +195,9 @@ export function Careers() {
               </a>
               <a className="secondary-button" href="#career-openings">
                 View Openings
+              </a>
+              <a className="secondary-button" href="http://127.0.0.1:8000/admin/" target="_blank" rel="noreferrer">
+                Admin Panel
               </a>
             </div>
           </div>
@@ -157,8 +262,12 @@ export function Careers() {
           </div>
 
           <div className="career-openings-grid">
+            {loadingJobs && <p className="career-empty-state">Loading current openings...</p>}
+            {!loadingJobs && jobs.length === 0 && (
+              <p className="career-empty-state">No active openings are posted yet. Add jobs from the admin panel.</p>
+            )}
             {filteredOpenings.map((opening) => (
-              <article className="career-opening-card" key={opening.title}>
+              <article className="career-opening-card" key={opening.id}>
                 <div className="career-opening-icon">
                   <BriefcaseBusiness className="h-20 w-20" />
                 </div>
@@ -166,12 +275,58 @@ export function Careers() {
                 <p>
                   {opening.experience} | {opening.type}
                 </p>
-                <a href="#career-apply">More Details</a>
+                {opening.location && <p>{opening.location}</p>}
+                {opening.description && <span>{opening.description}</span>}
+                <button type="button" onClick={() => selectJob(opening)}>
+                  More Details
+                </button>
               </article>
             ))}
           </div>
         </div>
       </section>
+
+      {detailJob && (
+        <section className="career-detail-section" id="career-details">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <article className="career-detail-panel">
+              <div className="career-detail-head">
+                <div className="career-detail-icon">
+                  <BriefcaseBusiness className="h-16 w-16" />
+                </div>
+                <div>
+                  <p className="eyebrow">{detailJob.category}</p>
+                  <h2>{detailJob.title}</h2>
+                  <div className="career-detail-meta">
+                    <span>{detailJob.experience}</span>
+                    <span>{detailJob.type}</span>
+                    {detailJob.location && <span>{detailJob.location}</span>}
+                  </div>
+                </div>
+              </div>
+
+              <div className="career-detail-content">
+                {renderJobText(
+                  detailJob.description ?? "",
+                  "About the Role:\nWe are seeking a skilled and motivated professional to join our team and contribute to high-quality digital product delivery.\nKey Responsibilities:\n- Work with the team to design, build, and maintain reliable solutions.\n- Collaborate with stakeholders to understand requirements and deliver clear outcomes.\n- Follow quality standards, communicate clearly, and take ownership of assigned work.",
+                )}
+                {detailJob.requirements && (
+                  <>
+                    <h3>Required Qualifications:</h3>
+                    {renderJobText(detailJob.requirements, "")}
+                  </>
+                )}
+                <h3>How to Apply:</h3>
+                <p>Interested candidates can submit their resume and details using the application form below.</p>
+              </div>
+
+              <a className="primary-button career-detail-apply" href="#career-apply">
+                Apply for this Job
+              </a>
+            </article>
+          </div>
+        </section>
+      )}
 
       <section className="section-band bg-white" id="career-apply">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -218,24 +373,80 @@ export function Careers() {
             </label>
             <label>
               Apply For *
-              <select name="role" required defaultValue="">
+              <select
+                name="jobId"
+                required
+                value={selectedJobId}
+                onChange={(event) => setSelectedJobId(event.target.value)}
+              >
                 <option value="" disabled>
                   Select role
                 </option>
-                {openings.map((opening) => (
-                  <option key={opening.title}>{opening.title}</option>
+                {jobs.map((opening) => (
+                  <option key={opening.id} value={opening.id}>
+                    {opening.title}
+                  </option>
                 ))}
               </select>
+            </label>
+            <label>
+              Resume *
+              <input name="resume" required type="file" accept=".pdf,.doc,.docx" />
             </label>
             <label>
               Message
               <textarea name="message" rows={4} />
             </label>
-            <button className="primary-button light" type="submit">
+            <input name="role" type="hidden" value={jobs.find((job) => String(job.id) === selectedJobId)?.title ?? ""} />
+            <button className="primary-button light" disabled={submitting || jobs.length === 0} type="submit">
               <Send className="h-4 w-4" />
-              Submit Application
+              {submitting ? "Submitting..." : "Submit Application"}
             </button>
           </form>
+          {latestTrackingId && (
+            <div className="career-tracking-success">
+              <strong>Application submitted successfully.</strong>
+              <span>Your application number is {latestTrackingId}. Use this with your email and phone to track status.</span>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="career-track-section" id="career-track">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="career-track-grid">
+            <div className="career-track-copy">
+              <p className="eyebrow">Track Application</p>
+              <h2>Check your job application status</h2>
+              <p>Enter your application number, email, and phone number to see the latest status from our hiring team.</p>
+            </div>
+
+            <form className="career-track-form" onSubmit={onTrackSubmit}>
+              <input name="trackingId" required placeholder="Application number, example 98405703" />
+              <input name="email" required type="email" placeholder="Email used while applying" />
+              <input name="phone" required placeholder="Phone number used while applying" />
+              <button className="primary-button" disabled={trackingLoading} type="submit">
+                {trackingLoading ? "Checking..." : "Track Status"}
+              </button>
+            </form>
+          </div>
+
+          {trackingResult && (
+            <article className="career-track-result">
+              <div>
+                <span>Application {trackingResult.applicationNumber}</span>
+                <h3>{trackingResult.role}</h3>
+                <p>{trackingResult.name}</p>
+              </div>
+              <div className="career-status-card">
+                <strong>{trackingResult.status}</strong>
+                <p>
+                  {trackingResult.statusReason ||
+                    "Your application is in our hiring workflow. Please check again later for more details."}
+                </p>
+              </div>
+            </article>
+          )}
         </div>
       </section>
     </>

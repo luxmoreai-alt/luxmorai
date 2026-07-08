@@ -38,9 +38,9 @@ export function Layout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-950">
+    <div className="site-shell min-h-screen text-slate-950">
       <Header />
-      <main ref={mainRef}>
+      <main className="site-main" ref={mainRef}>
         <Outlet />
       </main>
       <Footer />

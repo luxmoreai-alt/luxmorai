@@ -7,6 +7,10 @@ dist/
 # Local runtime and diagnostic files
 *.log
 vite-*.log
+__pycache__/
+*.py[cod]
+db.sqlite3
+backend/media/
 
 # Environment-specific configuration
 .env

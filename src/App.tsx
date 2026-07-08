@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { About } from "./pages/About";
+import { Admin } from "./pages/Admin";
 import { Careers } from "./pages/Careers";
 import { Contact } from "./pages/Contact";
 import { Home } from "./pages/Home";
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="technology/:slug" element={<TechnologyDetail />} />
         <Route path="careers" element={<Careers />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="admin" element={<Admin />} />
       </Route>
     </Routes>
   );
