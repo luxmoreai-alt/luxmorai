@@ -161,7 +161,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = Path('/tmp/media') if os.environ.get('VERCEL') else BASE_DIR / 'media'
 
 FRONTEND_ORIGINS = os.environ.get(
     'FRONTEND_ORIGINS',
