@@ -35,13 +35,32 @@ export function Admin() {
   const [loading, setLoading] = useState(true);
   const [savingJob, setSavingJob] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<number | null>(null);
+  const [applicationSearch, setApplicationSearch] = useState("");
   const [status, setStatus] = useState("new");
   const [statusReason, setStatusReason] = useState("");
   const [notes, setNotes] = useState("");
 
+  const filteredApplications = useMemo(() => {
+    const query = applicationSearch.trim().toLowerCase();
+    if (!query) return applications;
+
+    return applications.filter((application) =>
+      [
+        application.applicationNumber,
+        application.name,
+        application.email,
+        application.phone,
+        application.role,
+      ].some((value) => value.toLowerCase().includes(query)),
+    );
+  }, [applicationSearch, applications]);
+
   const selectedApplication = useMemo(
-    () => applications.find((application) => application.id === selectedApplicationId) ?? applications[0],
-    [applications, selectedApplicationId],
+    () =>
+      filteredApplications.find((application) => application.id === selectedApplicationId) ??
+      filteredApplications[0] ??
+      null,
+    [filteredApplications, selectedApplicationId],
   );
 
   const openJobs = jobs.length;
@@ -270,10 +289,21 @@ export function Admin() {
         ) : (
           <div className="admin-applications">
             <div className="admin-candidate-list">
+              <label className="admin-search-field">
+                Search candidates
+                <input
+                  value={applicationSearch}
+                  onChange={(event) => setApplicationSearch(event.target.value)}
+                  placeholder="Name, email, phone, or application number"
+                  type="search"
+                />
+              </label>
               {applications.length === 0 ? (
                 <p className="admin-empty">No applications submitted yet.</p>
+              ) : filteredApplications.length === 0 ? (
+                <p className="admin-empty">No candidates match your search.</p>
               ) : (
-                applications.map((application) => (
+                filteredApplications.map((application) => (
                   <button
                     className={application.id === selectedApplication?.id ? "active" : ""}
                     key={application.id}

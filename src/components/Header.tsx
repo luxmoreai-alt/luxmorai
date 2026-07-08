@@ -52,7 +52,7 @@ export function Header() {
           />
         </Link>
 
-        <nav className="ml-4 hidden min-w-0 flex-1 items-center justify-start gap-1 xl:flex">
+        <nav className="ml-8 hidden min-w-0 flex-1 items-center justify-start gap-1 2xl:ml-12 xl:flex">
           {navItems.map((item) =>
             item.href === "/services" ? (
               <div className="services-nav-group" key={item.href}>

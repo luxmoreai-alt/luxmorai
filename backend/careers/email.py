@@ -1,5 +1,3 @@
-from email.mime.image import MIMEImage
-
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -13,27 +11,16 @@ def get_application_number(application):
 
 
 def get_email_context(application):
-    track_url = f"{settings.FRONTEND_SITE_URL}/careers#career-track"
+    site_url = settings.FRONTEND_SITE_URL.rstrip("/")
+    track_url = f"{site_url}/careers#career-track"
     return {
         "application": application,
         "application_number": get_application_number(application),
         "track_url": track_url,
-        "logo_cid": "luxmorai_logo",
-        "careers_url": f"{settings.FRONTEND_SITE_URL}/careers",
-        "contact_url": f"{settings.FRONTEND_SITE_URL}/contact",
+        "logo_url": f"{site_url}/luxmorai-logo.png",
+        "careers_url": f"{site_url}/careers",
+        "contact_url": "mailto:hr@luxmorai.com",
     }
-
-
-def attach_logo(message):
-    logo_path = settings.BASE_DIR.parent / "public" / "luxmorai-logo.jpeg"
-    if not logo_path.exists():
-        return
-
-    with logo_path.open("rb") as logo_file:
-        image = MIMEImage(logo_file.read())
-    image.add_header("Content-ID", "<luxmorai_logo>")
-    image.add_header("Content-Disposition", "inline", filename="luxmorai-logo.jpeg")
-    message.attach(image)
 
 
 def send_career_email(application, subject, template_name):
@@ -54,7 +41,6 @@ def send_career_email(application, subject, template_name):
         reply_to=[settings.DEFAULT_FROM_EMAIL],
     )
     message.attach_alternative(html_body, "text/html")
-    attach_logo(message)
     message.send()
     return True
 

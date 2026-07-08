@@ -176,7 +176,7 @@ FRONTEND_ORIGINS = os.environ.get(
     ),
 ).split(',')
 
-FRONTEND_SITE_URL = os.environ.get('FRONTEND_SITE_URL', FRONTEND_ORIGINS[-1]).rstrip('/')
+FRONTEND_SITE_URL = os.environ.get('FRONTEND_SITE_URL', 'https://www.luxmorai.com').rstrip('/')
 
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.zoho.com')
