@@ -279,7 +279,7 @@ export function Home() {
               src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85"
               alt="Product strategy meeting with a collaborative technology team"
             />
-            <div className="home-experience-badge"><strong>20+</strong><span>Years of combined experience</span></div>
+            <div className="home-experience-badge"><strong>4+</strong><span>years of combined experience</span></div>
           </motion.div>
           <motion.div className="home-partner-copy" {...reveal} transition={{ delay: 0.1 }}>
             <p className="home-eyebrow">A better technology partner</p>

@@ -8,9 +8,6 @@ import {
   trackCareerApplication,
   TrackingApplication,
 } from "../lib/api";
-import { Link } from "react-router-dom";
-
-const categories = ["Development", "Internship", "Testing", "Management", "Designing", "SEO"];
 
 const careerFeatures = [
   {
@@ -37,7 +34,6 @@ const careerFeatures = [
 
 export function Careers() {
   const [jobs, setJobs] = useState<CareerJob[]>([]);
-  const [activeCategory, setActiveCategory] = useState("Development");
   const [loadingJobs, setLoadingJobs] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState("");
   const [detailJobId, setDetailJobId] = useState("");
@@ -46,15 +42,9 @@ export function Careers() {
   const [trackingLoading, setTrackingLoading] = useState(false);
   const [trackingResult, setTrackingResult] = useState<TrackingApplication | null>(null);
 
-  const fullTimeOpenings = useMemo(() => jobs.filter((opening) => opening.type === "Full time").length, [jobs]);
   const detailJob = useMemo(
     () => jobs.find((opening) => String(opening.id) === detailJobId) ?? null,
     [detailJobId, jobs],
-  );
-
-  const filteredOpenings = useMemo(
-    () => jobs.filter((opening) => opening.category === activeCategory),
-    [activeCategory, jobs],
   );
 
   useEffect(() => {
@@ -65,7 +55,6 @@ export function Careers() {
       .then((items) => {
         if (!mounted) return;
         setJobs(items);
-        setActiveCategory(items[0]?.category ?? "Development");
       })
       .catch(() => {
         setJobs([]);
@@ -131,6 +120,11 @@ export function Careers() {
   }
 
   function selectJob(opening: CareerJob) {
+    if (String(opening.id) === detailJobId) {
+      setDetailJobId("");
+      return;
+    }
+
     setSelectedJobId(String(opening.id));
     setDetailJobId(String(opening.id));
     requestAnimationFrame(() => {
@@ -188,12 +182,8 @@ export function Careers() {
                 <span>open roles</span>
               </div>
               <div className="career-hero-metric">
-                <strong>{categories.length}</strong>
+                <strong>{new Set(jobs.map((job) => job.category)).size}</strong>
                 <span>career tracks</span>
-              </div>
-              <div className="career-hero-metric">
-                <strong>{fullTimeOpenings}</strong>
-                <span>full-time positions</span>
               </div>
             </div>
             <div className="career-hero-actions">
@@ -203,9 +193,9 @@ export function Careers() {
               <a className="secondary-button" href="#career-openings">
                 View Openings
               </a>
-              <Link className="secondary-button" to="/admin">
-                Admin Panel
-              </Link>
+              <a className="secondary-button" href="#career-track">
+                Track Application
+              </a>
             </div>
           </div>
           <div className="career-hero-media">
@@ -258,25 +248,12 @@ export function Careers() {
             </a>
           </div>
 
-          <div className="career-tabs" role="tablist" aria-label="Career categories">
-            {categories.map((category) => (
-              <button
-                className={category === activeCategory ? "active" : ""}
-                key={category}
-                type="button"
-                onClick={() => setActiveCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
           <div className="career-openings-grid">
             {loadingJobs && <p className="career-empty-state">Loading current openings...</p>}
             {!loadingJobs && jobs.length === 0 && (
               <p className="career-empty-state">Currently no openings are posted. Please check back soon.</p>
             )}
-            {filteredOpenings.map((opening) => (
+            {jobs.map((opening) => (
               <article className="career-opening-row" key={opening.id}>
                 <div className="career-opening-title">
                   <BriefcaseBusiness className="h-5 w-5" />
@@ -287,7 +264,7 @@ export function Careers() {
                   {opening.experience} | {opening.type}
                 </span>
                 <button type="button" onClick={() => selectJob(opening)}>
-                  Apply
+                  {String(opening.id) === detailJobId ? "Hide Details" : "See Details"}
                 </button>
               </article>
             ))}
