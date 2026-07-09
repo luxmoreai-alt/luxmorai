@@ -3,11 +3,12 @@ import re
 from urllib.parse import quote
 
 from django.http import Http404, HttpResponse, JsonResponse
+from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from .email import send_application_confirmation, send_application_status_update
-from .models import Application, Inquiry, Job
+from .models import Application, BlogPost, Inquiry, Job
 
 APPLICATION_NUMBER_PREFIX = "9840570"
 
@@ -35,6 +36,58 @@ def serialize_job(job):
         "requirements": job.requirements,
         "isActive": job.is_active,
     }
+
+
+def serialize_blog_post(post):
+    return {
+        "id": post.id,
+        "slug": post.slug,
+        "title": post.title,
+        "description": post.description,
+        "image": post.image,
+        "imageAlt": post.image_alt,
+        "brief": post.brief,
+        "keyword": post.keyword,
+        "relatedKeywords": post.related_keywords or [],
+        "sections": post.sections or [],
+        "servicePath": post.service_path,
+        "isPublished": post.is_published,
+        "createdAt": post.created_at.isoformat(),
+        "updatedAt": post.updated_at.isoformat(),
+    }
+
+
+def unique_blog_slug(title, requested_slug="", post_id=None):
+    base_slug = slugify(requested_slug or title) or "blog-post"
+    candidate = base_slug
+    counter = 2
+
+    while BlogPost.objects.filter(slug=candidate).exclude(id=post_id).exists():
+        candidate = f"{base_slug}-{counter}"
+        counter += 1
+
+    return candidate
+
+
+def normalize_sections(sections):
+    if not isinstance(sections, list):
+        return []
+
+    normalized = []
+    for section in sections:
+        if not isinstance(section, dict):
+            continue
+        heading = str(section.get("heading", "")).strip()
+        body = str(section.get("body", "")).strip()
+        if heading and body:
+            normalized.append({"heading": heading, "body": body})
+    return normalized
+
+
+def normalize_keywords(keywords):
+    if isinstance(keywords, list):
+        return [str(keyword).strip() for keyword in keywords if str(keyword).strip()]
+    return []
 
 
 def serialize_application(application, request):
@@ -79,6 +132,65 @@ def serialize_tracking_application(application):
 def jobs(request):
     active_jobs = Job.objects.filter(is_active=True)
     return JsonResponse({"jobs": [serialize_job(job) for job in active_jobs]})
+
+
+@require_http_methods(["GET"])
+def blog_posts(request):
+    posts = BlogPost.objects.filter(is_published=True)
+    return JsonResponse({"posts": [serialize_blog_post(post) for post in posts]})
+
+
+@require_http_methods(["GET"])
+def blog_post_detail(request, slug):
+    post = BlogPost.objects.filter(slug=slug, is_published=True).first()
+    if not post:
+        return JsonResponse({"error": "Blog post not found."}, status=404)
+    return JsonResponse({"post": serialize_blog_post(post)})
+
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def admin_blog_posts(request):
+    if request.method == "GET":
+        return JsonResponse({"posts": [serialize_blog_post(post) for post in BlogPost.objects.all()]})
+
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON."}, status=400)
+
+    required_fields = ["title", "description"]
+    missing = [field for field in required_fields if not payload.get(field)]
+    if missing:
+        return JsonResponse({"error": f"Missing fields: {', '.join(missing)}"}, status=400)
+
+    sections = normalize_sections(payload.get("sections", []))
+    post = BlogPost.objects.create(
+        title=payload["title"].strip(),
+        slug=unique_blog_slug(payload["title"], payload.get("slug", "")),
+        description=payload["description"].strip(),
+        image=payload.get("image", "").strip(),
+        image_alt=payload.get("imageAlt", "").strip(),
+        brief=payload.get("brief", "").strip(),
+        keyword=payload.get("keyword", "").strip(),
+        related_keywords=normalize_keywords(payload.get("relatedKeywords", [])),
+        sections=sections,
+        service_path=payload.get("servicePath", "/contact").strip() or "/contact",
+        is_published=bool(payload.get("isPublished", True)),
+    )
+    return JsonResponse({"post": serialize_blog_post(post), "message": "Blog post saved."}, status=201)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def admin_blog_post_toggle(request, post_id):
+    post = BlogPost.objects.filter(id=post_id).first()
+    if not post:
+        return JsonResponse({"error": "Blog post not found."}, status=404)
+
+    post.is_published = not post.is_published
+    post.save(update_fields=["is_published", "updated_at"])
+    return JsonResponse({"post": serialize_blog_post(post), "isPublished": post.is_published})
 
 
 @csrf_exempt

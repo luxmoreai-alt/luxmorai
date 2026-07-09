@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Application, Inquiry, Job
+from .models import Application, BlogPost, Inquiry, Job
 
 
 @admin.register(Job)
@@ -24,6 +24,15 @@ class ApplicationAdmin(admin.ModelAdmin):
         if not obj.resume:
             return "-"
         return format_html('<a href="{}" target="_blank" rel="noopener">View resume</a>', obj.resume.url)
+
+
+@admin.register(BlogPost)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ("title", "slug", "keyword", "is_published", "updated_at")
+    list_filter = ("is_published", "created_at", "updated_at")
+    search_fields = ("title", "slug", "description", "keyword")
+    prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("created_at", "updated_at")
 
 
 @admin.register(Inquiry)

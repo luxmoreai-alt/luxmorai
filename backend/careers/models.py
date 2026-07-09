@@ -20,6 +20,28 @@ class Job(models.Model):
         return self.title
 
 
+class BlogPost(models.Model):
+    title = models.CharField(max_length=220)
+    slug = models.SlugField(max_length=240, unique=True)
+    description = models.TextField()
+    image = models.URLField(max_length=600, blank=True)
+    image_alt = models.CharField(max_length=220, blank=True)
+    brief = models.TextField(blank=True)
+    keyword = models.CharField(max_length=120, blank=True)
+    related_keywords = models.JSONField(default=list, blank=True)
+    sections = models.JSONField(default=list, blank=True)
+    service_path = models.CharField(max_length=160, default="/contact")
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at", "-created_at"]
+
+    def __str__(self):
+        return self.title
+
+
 class Application(models.Model):
     STATUS_CHOICES = [
         ("new", "New"),

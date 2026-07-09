@@ -4,9 +4,13 @@ from . import views
 
 urlpatterns = [
     path("jobs/", views.jobs, name="jobs"),
+    path("blog-posts/", views.blog_posts, name="blog_posts"),
+    path("blog-posts/<slug:slug>/", views.blog_post_detail, name="blog_post_detail"),
     path("applications/", views.applications, name="applications"),
     path("applications/track/", views.track_application, name="track_application"),
     path("inquiries/", views.inquiries, name="inquiries"),
+    path("admin/blog-posts/", views.admin_blog_posts, name="admin_blog_posts"),
+    path("admin/blog-posts/<int:post_id>/toggle/", views.admin_blog_post_toggle, name="admin_blog_post_toggle"),
     path("admin/jobs/", views.admin_jobs, name="admin_jobs"),
     path("admin/jobs/<int:job_id>/toggle/", views.admin_job_toggle, name="admin_job_toggle"),
     path("admin/applications/", views.admin_applications, name="admin_applications"),

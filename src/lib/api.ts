@@ -56,8 +56,40 @@ export type TrackingApplication = Pick<
   "id" | "applicationNumber" | "role" | "name" | "email" | "phone" | "status" | "statusReason" | "createdAt"
 >;
 
+export type BlogSection = {
+  heading: string;
+  body: string;
+};
+
+export type ApiBlogPost = {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  brief: string;
+  keyword: string;
+  relatedKeywords: string[];
+  sections: BlogSection[];
+  servicePath: string;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export async function sendInquiry(payload: InquiryPayload) {
   return api.post("/inquiries/", payload);
+}
+
+export async function getBlogPosts() {
+  const response = await api.get<{ posts: ApiBlogPost[] }>("/blog-posts/");
+  return response.data.posts;
+}
+
+export async function getBlogPost(slug: string) {
+  const response = await api.get<{ post: ApiBlogPost }>(`/blog-posts/${slug}/`);
+  return response.data.post;
 }
 
 export async function getCareerJobs() {
@@ -82,6 +114,21 @@ export async function trackCareerApplication(payload: { trackingId: string; emai
 export async function getAdminJobs() {
   const response = await api.get<{ jobs: CareerJob[] }>("/admin/jobs/");
   return response.data.jobs;
+}
+
+export async function getAdminBlogPosts() {
+  const response = await api.get<{ posts: ApiBlogPost[] }>("/admin/blog-posts/");
+  return response.data.posts;
+}
+
+export async function createAdminBlogPost(payload: Omit<ApiBlogPost, "id" | "createdAt" | "updatedAt">) {
+  const response = await api.post<{ post: ApiBlogPost }>("/admin/blog-posts/", payload);
+  return response.data.post;
+}
+
+export async function toggleAdminBlogPost(postId: number) {
+  const response = await api.post<{ post: ApiBlogPost; isPublished: boolean }>(`/admin/blog-posts/${postId}/toggle/`);
+  return response.data;
 }
 
 export async function createAdminJob(payload: Omit<CareerJob, "id">) {

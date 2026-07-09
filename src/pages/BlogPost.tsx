@@ -1,11 +1,17 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { BlogImage } from "../components/BlogImage";
 import { blogPosts, getBlogPostBySlug } from "../data/blogPosts";
+import { ApiBlogPost, getBlogPost, getBlogPosts } from "../lib/api";
 import { pageSchema, useSeo } from "../lib/seo";
 
 export function BlogPost() {
   const { slug } = useParams();
-  const post = getBlogPostBySlug(slug);
+  const [apiPosts, setApiPosts] = useState<ApiBlogPost[]>([]);
+  const [missingPost, setMissingPost] = useState(false);
+  const staticPost = getBlogPostBySlug(slug);
+  const post = apiPosts.find((item) => item.slug === slug) ?? staticPost;
 
   useSeo({
     title: post ? `${post.title} | Luxmor AI Blog` : "Blog | Luxmor AI",
@@ -40,11 +46,34 @@ export function BlogPost() {
       : undefined,
   });
 
-  if (!post) {
+  useEffect(() => {
+    if (!slug) return;
+
+    getBlogPost(slug)
+      .then((item) => {
+        setApiPosts((current) => [item, ...current.filter((post) => post.slug !== item.slug)]);
+        setMissingPost(false);
+      })
+      .catch(() => {
+        setMissingPost(!staticPost);
+      });
+
+    getBlogPosts()
+      .then((items) => setApiPosts(items))
+      .catch(() => undefined);
+  }, [slug, staticPost]);
+
+  if (!post && missingPost) {
     return <Navigate to="/blog" replace />;
   }
 
-  const relatedPosts = blogPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
+  if (!post) {
+    return <section className="section-band bg-white text-center">Loading article...</section>;
+  }
+
+  const staticOnlyPosts = blogPosts.filter((item) => !apiPosts.some((post) => post.slug === item.slug));
+  const allPosts = [...apiPosts, ...staticOnlyPosts];
+  const relatedPosts = allPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
 
   return (
     <>
@@ -66,7 +95,7 @@ export function BlogPost() {
               ))}
             </div>
           </div>
-          <img className="blog-hero-image" src={post.image} alt={post.imageAlt} />
+          <BlogImage className="blog-hero-image" src={post.image} alt={post.imageAlt} />
         </div>
       </section>
 
@@ -106,7 +135,7 @@ export function BlogPost() {
           <div className="grid gap-5 md:grid-cols-3">
             {relatedPosts.map((item) => (
               <Link className="service-card group" key={item.slug} to={`/blog/${item.slug}`}>
-                <img className="blog-card-image" src={item.image} alt={item.imageAlt} />
+                <BlogImage className="blog-card-image" src={item.image} alt={item.imageAlt} />
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
                 <span className="mt-5 inline-flex items-center gap-2 text-sm font-extrabold text-sky-700">

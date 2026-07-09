@@ -3,6 +3,7 @@ import { Layout } from "./components/Layout";
 import { About } from "./pages/About";
 import { Admin } from "./pages/Admin";
 import { Blog } from "./pages/Blog";
+import { BlogAdmin } from "./pages/BlogAdmin";
 import { BlogPost } from "./pages/BlogPost";
 import { Careers } from "./pages/Careers";
 import { Contact } from "./pages/Contact";
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="technology/:slug" element={<TechnologyDetail />} />
         <Route path="blog" element={<Blog />} />
         <Route path="blog/:slug" element={<BlogPost />} />
+        <Route path="blog-admin" element={<BlogAdmin />} />
         <Route path="careers" element={<Careers />} />
         <Route path="contact" element={<Contact />} />
         <Route path="admin" element={<Admin />} />
