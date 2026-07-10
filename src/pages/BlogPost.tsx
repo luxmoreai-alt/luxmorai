@@ -6,6 +6,48 @@ import { blogPosts, getBlogPostBySlug } from "../data/blogPosts";
 import { ApiBlogPost, getBlogPost, getBlogPosts } from "../lib/api";
 import { pageSchema, useSeo } from "../lib/seo";
 
+function isHeadingLike(text: string) {
+  const cleanText = text.trim();
+  return cleanText.length > 0 && cleanText.length <= 80 && !/[.!?]$/.test(cleanText);
+}
+
+function renderArticleBody(body: string) {
+  return body
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block, index) => {
+      const lines = block
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      if (lines.length === 1 && isHeadingLike(lines[0])) {
+        return (
+          <h3 className="blog-subheading" key={`${lines[0]}-${index}`}>
+            {lines[0]}
+          </h3>
+        );
+      }
+
+      if (lines.length > 2 && lines.every((line) => line.length <= 90 && !/[.!?]$/.test(line))) {
+        return (
+          <ul className="blog-list" key={`${lines[0]}-${index}`}>
+            {lines.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        );
+      }
+
+      return (
+        <p className="blog-paragraph" key={`${block.slice(0, 30)}-${index}`}>
+          {lines.join(" ")}
+        </p>
+      );
+    });
+}
+
 export function BlogPost() {
   const { slug } = useParams();
   const [apiPosts, setApiPosts] = useState<ApiBlogPost[]>([]);
@@ -107,19 +149,19 @@ export function BlogPost() {
             <p>{post.brief}</p>
           </div>
           {post.sections.map((section) => (
-            <section className="mb-10" key={section.heading}>
+            <section className="blog-article-section" key={section.heading}>
               <h2 className="section-title mb-4 text-slate-950">{section.heading}</h2>
-              <p>{section.body}</p>
+              {renderArticleBody(section.body)}
             </section>
           ))}
-          <div className="industry-closing-panel mt-12">
+          <div className="industry-closing-panel blog-closing-panel mt-12">
             <div>
               <p className="eyebrow text-amber-300">Next step</p>
               <h2>Want to apply this inside your business?</h2>
               <p>Luxmor AI can help plan, build, and launch the right system around your workflow.</p>
             </div>
             <Link className="primary-button light" to={post.servicePath}>
-              Explore service
+              Explore services
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
