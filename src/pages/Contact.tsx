@@ -13,9 +13,9 @@ export function Contact() {
   const isSubmitting = useRef(false);
 
   useSeo({
-    title: "Contact Luxmor AI | Discuss AI, CRM, Software & Automation Projects",
+    title: "Contact Luxmorai Technologies | AI & Software Projects",
     description:
-      "Contact Luxmor AI to discuss AI solutions, CRM development, workflow automation, custom software, web development, mobile apps, and digital product ideas.",
+      "Contact Luxmorai Technologies Pvt Ltd to discuss AI, CRM, automation, custom software, web development, mobile apps, cloud solutions, and digital products.",
     path: "/contact",
   });
 

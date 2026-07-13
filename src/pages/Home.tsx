@@ -80,6 +80,29 @@ const highlights = [
   ["24/7", "Support mindset"],
 ];
 
+const brandFaqs = [
+  {
+    question: "What is Luxmorai Technologies?",
+    answer:
+      "Luxmorai Technologies Pvt Ltd, also known as Luxmor AI, is an AI and software development company that builds custom software, CRM systems, workflow automation, web platforms, mobile apps, and cloud solutions.",
+  },
+  {
+    question: "What does Luxmorai Technologies do?",
+    answer:
+      "Luxmorai Technologies provides AI and machine learning solutions, custom software development, CRM development, web and mobile application development, cloud engineering, data analytics, UI/UX design, testing, and digital marketing services.",
+  },
+  {
+    question: "Where is the Luxmorai Technologies Chennai office?",
+    answer:
+      "The Chennai office is at Olympia Cyberspace, 21/22 Alandur Road, Arulayiammanpet, 2nd Street, Guindy, Chennai, Tamil Nadu 600032, India.",
+  },
+  {
+    question: "How can I contact Luxmorai Technologies?",
+    answer:
+      "Email info@luxmorai.com, call +91 9884050511, use the contact page, or connect with Luxmorai Technologies on LinkedIn.",
+  },
+];
+
 const heroSlides = [
   {
     src: "/home-slides/ux-design-web.jpg",
@@ -142,21 +165,22 @@ export function Home() {
   const activeHeroSlide = heroSlides[activeSlide];
 
   useSeo({
-    title: "Luxmor AI | AI Solutions, Custom Software, CRM & Automation for Businesses",
+    title: "Luxmorai Technologies | AI, Software, CRM & Automation Company",
     description:
-      "Luxmor AI builds AI solutions, custom software, CRM systems, workflow automation, and scalable digital products for growing businesses.",
+      "Luxmorai Technologies Pvt Ltd builds AI solutions, custom software, CRM systems, workflow automation, web platforms, mobile apps, and cloud solutions.",
     structuredData: [
       siteSchema,
       pageSchema(
         "/",
-        "Luxmor AI | AI Solutions, Custom Software, CRM & Automation for Businesses",
-        "Luxmor AI builds AI solutions, custom software, CRM systems, workflow automation, and scalable digital products for growing businesses.",
+        "Luxmorai Technologies | AI, Software, CRM & Automation Company",
+        "Luxmorai Technologies Pvt Ltd builds AI solutions, custom software, CRM systems, workflow automation, web platforms, mobile apps, and cloud solutions.",
       ),
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "@id": "https://www.luxmorai.com/#website",
         name: "Luxmorai Technologies",
+        alternateName: ["Luxmorai Technologies Pvt Ltd", "Luxmor AI", "Luxmorai AI Technologies"],
         url: "https://www.luxmorai.com",
         publisher: {
           "@id": "https://www.luxmorai.com/#organization",
@@ -165,32 +189,11 @@ export function Home() {
       {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: [
-          {
-            "@type": "Question",
-            name: "What does Luxmorai Technologies do?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Luxmorai Technologies builds AI solutions, custom software, CRM systems, workflow automation, mobile apps, web platforms, cloud systems, and digital products for businesses.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Where is Luxmorai Technologies located?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Luxmorai Technologies has offices in Hyderabad, Bengaluru, and Chennai, and serves clients across India and global markets.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "How can I contact Luxmorai Technologies?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "You can contact Luxmorai Technologies at info@luxmorai.com, call +91 9884050511, or use the contact page at https://www.luxmorai.com/contact.",
-            },
-          },
-        ],
+        mainEntity: brandFaqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
       },
     ],
   });
@@ -382,6 +385,29 @@ export function Home() {
                   <p>{industry.text}</p>
                   <Link to={`/industries/${industry.slug}`}><ArrowRight /></Link>
                 </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="home-section" aria-labelledby="luxmorai-faq-title">
+        <div className="home-container">
+          <motion.div className="home-heading home-heading-centered" {...reveal}>
+            <p className="home-eyebrow">Luxmorai Technologies FAQs</p>
+            <h2 id="luxmorai-faq-title">Quick answers about Luxmorai</h2>
+            <p>Clear company facts for customers, search engines, and AI answer platforms.</p>
+          </motion.div>
+          <div className="grid gap-5 md:grid-cols-2">
+            {brandFaqs.map((faq, index) => (
+              <motion.article
+                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                key={faq.question}
+                {...reveal}
+                transition={{ delay: index * 0.06 }}
+              >
+                <h3 className="text-lg font-black text-slate-950">{faq.question}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-600">{faq.answer}</p>
               </motion.article>
             ))}
           </div>

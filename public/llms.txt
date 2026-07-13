@@ -3,6 +3,7 @@
 Luxmorai Technologies Pvt Ltd, also known as Luxmor AI, builds AI solutions, custom software, CRM systems, workflow automation, mobile apps, web platforms, cloud systems, data solutions, and quality engineering services for businesses.
 
 Canonical website: https://www.luxmorai.com/
+Official LinkedIn: https://www.linkedin.com/company/luxmoraipvtltd/
 Contact: info@luxmorai.com
 Phone: +91 9884050511
 Careers contact: hr@luxmorai.com
@@ -22,7 +23,7 @@ Primary services:
 Office locations:
 - Hyderabad, Telangana, India
 - Bengaluru, Karnataka, India
-- Chennai, Tamil Nadu, India
+- Chennai office: Olympia Cyberspace, 21/22 Alandur Road, Arulayiammanpet, 2nd Street, Guindy, Chennai, Tamil Nadu 600032, India
 
 Important pages:
 - Home: https://www.luxmorai.com/
@@ -35,3 +36,8 @@ Important pages:
 
 Short answer summary:
 Luxmorai Technologies is a software and AI solutions company that helps businesses design, build, automate, and scale digital products using practical engineering, cloud systems, CRM platforms, web and mobile apps, analytics, and AI-powered workflows.
+
+Entity and brand names:
+- Legal name: Luxmorai Technologies Pvt Ltd
+- Primary brand: Luxmorai Technologies
+- Also known as: Luxmor AI, Luxmorai AI Technologies, Luxmorai

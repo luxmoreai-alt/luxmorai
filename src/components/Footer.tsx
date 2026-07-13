@@ -1,4 +1,4 @@
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const links = ["AI & ML", "Software Development", "Mobile Apps", "Website Development", "UI/UX Design", "Digital Marketing"];
@@ -14,7 +14,7 @@ const offices = [
   },
   {
     name: "Chennai Office",
-    address: "25H9+8M6, Mount Poonamallee Rd, Porur, Chennai, Tamil Nadu 600116",
+    address: "Olympia Cyberspace, 21/22 Alandur Road, Arulayiammanpet, 2nd Street, Guindy, Chennai, Greater Chennai, Tamil Nadu 600032",
   },
 ];
 
@@ -65,6 +65,16 @@ export function Footer() {
             <a className="flex gap-3 hover:text-white" href="tel:+919884050511">
               <Phone className="mt-0.5 h-4 w-4 text-amber-400" />
               +91 9884050511
+            </a>
+            <a
+              className="flex gap-3 hover:text-white"
+              href="https://www.linkedin.com/company/luxmoraipvtltd/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Luxmorai Technologies on LinkedIn"
+            >
+              <Linkedin className="mt-0.5 h-4 w-4 text-amber-400" />
+              Luxmorai Technologies on LinkedIn
             </a>
           </div>
         </div>

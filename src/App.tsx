@@ -8,6 +8,7 @@ import { BlogPost } from "./pages/BlogPost";
 import { Careers } from "./pages/Careers";
 import { Contact } from "./pages/Contact";
 import { Home } from "./pages/Home";
+import { HiringPortal } from "./pages/HiringPortal";
 import { Industries } from "./pages/Industries";
 import { IndustryDetail } from "./pages/IndustryDetail";
 import { ServiceDetail } from "./pages/ServiceDetail";
@@ -33,6 +34,8 @@ export default function App() {
         <Route path="careers" element={<Careers />} />
         <Route path="contact" element={<Contact />} />
         <Route path="admin" element={<Admin />} />
+        <Route path="hiring" element={<HiringPortal />} />
+        <Route path=":candidateSlug/hiring/:roleSlug" element={<HiringPortal />} />
       </Route>
     </Routes>
   );

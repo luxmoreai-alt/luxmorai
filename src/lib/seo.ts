@@ -73,7 +73,8 @@ export const siteSchema = {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
       name: "Luxmorai Technologies Pvt Ltd",
-      alternateName: ["Luxmor AI", "Luxmorai"],
+      legalName: "Luxmorai Technologies Pvt Ltd",
+      alternateName: ["Luxmorai Technologies", "Luxmor AI", "Luxmorai AI Technologies"],
       url: SITE_URL,
       logo: `${SITE_URL}/luxmorai-logo.png`,
       email: "info@luxmorai.com",
@@ -81,15 +82,51 @@ export const siteSchema = {
       foundingDate: "2022",
       description:
         "Luxmorai Technologies Pvt Ltd builds AI solutions, custom software, CRM systems, mobile apps, web platforms, cloud systems, and workflow automation for businesses.",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "19/3RT, Line 2, Street 5, Prakash Nagar, Begumpet",
-        addressLocality: "Hyderabad",
-        addressRegion: "Telangana",
-        postalCode: "500016",
-        addressCountry: "IN",
+      address: [
+        {
+          "@type": "PostalAddress",
+          streetAddress: "19/3RT, Line 2, Street 5, Prakash Nagar, Begumpet",
+          addressLocality: "Hyderabad",
+          addressRegion: "Telangana",
+          postalCode: "500016",
+          addressCountry: "IN",
+        },
+        {
+          "@type": "PostalAddress",
+          streetAddress: "Pritech Road, Bellandur",
+          addressLocality: "Bengaluru",
+          addressRegion: "Karnataka",
+          postalCode: "560103",
+          addressCountry: "IN",
+        },
+        {
+          "@type": "PostalAddress",
+          streetAddress: "Olympia Cyberspace, 21/22 Alandur Road, Arulayiammanpet, 2nd Street, Guindy",
+          addressLocality: "Chennai",
+          addressRegion: "Tamil Nadu",
+          postalCode: "600032",
+          addressCountry: "IN",
+        },
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+919884050511",
+        email: "info@luxmorai.com",
+        contactType: "sales and customer support",
+        availableLanguage: ["English"],
+        areaServed: ["IN", "US"],
       },
-      sameAs: [SITE_URL],
+      knowsAbout: [
+        "Artificial intelligence",
+        "Machine learning",
+        "Custom software development",
+        "CRM software",
+        "Workflow automation",
+        "Web application development",
+        "Mobile application development",
+        "Cloud computing",
+      ],
+      sameAs: ["https://www.linkedin.com/company/luxmoraipvtltd/"],
     },
     {
       "@type": "LocalBusiness",
@@ -152,9 +189,10 @@ export function useSeo({
     upsertMeta("description", description);
     upsertMeta("robots", robots);
     upsertMeta("author", "Luxmorai Technologies Pvt Ltd");
+    upsertMeta("application-name", "Luxmorai Technologies");
     upsertMeta(
       "keywords",
-      "Luxmor AI, Luxmorai Technologies, AI solutions, custom software development, CRM development, workflow automation, mobile app development, web development, cloud solutions, IT staffing",
+      "Luxmorai Technologies, Luxmorai Technologies Pvt Ltd, Luxmorai AI Technologies, Luxmor AI, Luxmor, AI solutions, custom software development, CRM development, workflow automation, mobile app development, web development, cloud solutions, IT staffing",
     );
     upsertMeta("twitter:card", "summary_large_image");
     upsertMeta("twitter:title", title);
@@ -166,6 +204,7 @@ export function useSeo({
     upsertPropertyMeta("og:url", canonical);
     upsertPropertyMeta("og:image", imageUrl);
     upsertPropertyMeta("og:site_name", "Luxmorai Technologies");
+    upsertPropertyMeta("og:locale", "en_IN");
     upsertCanonical(canonical);
 
     if (structuredData) {

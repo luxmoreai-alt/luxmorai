@@ -49,7 +49,7 @@ const officeLocations = [
   {
     city: "Chennai",
     position: "right",
-    address: "25H9+8M6, Mount Poonamallee Rd, Porur, Chennai, Tamil Nadu 600116",
+    address: "Olympia Cyberspace, 21/22 Alandur Road, Arulayiammanpet, 2nd Street, Guindy, Chennai, Greater Chennai, Tamil Nadu 600032",
     details: ["Digital delivery team", "Web & mobile solutions", "Client support"],
   },
   { city: "Noida", position: "center", details: ["Business operations", "Technology consulting", "Project coordination"] },
@@ -59,9 +59,9 @@ const officeLocations = [
 
 export function About() {
   useSeo({
-    title: "About Luxmor AI | Custom Software and AI Development Company",
+    title: "About Luxmorai Technologies | AI & Software Development Company",
     description:
-      "Learn about Luxmor AI, a technology partner building custom software, AI solutions, web platforms, mobile apps, cloud systems, and digital products.",
+      "Learn about Luxmorai Technologies Pvt Ltd, an AI and software development company with offices in Hyderabad, Bengaluru, and Chennai, India.",
     path: "/about",
   });
 
