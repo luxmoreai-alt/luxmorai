@@ -38,13 +38,20 @@ def serialize_job(job):
     }
 
 
-def serialize_blog_post(post):
+def serialize_blog_post(post, request=None):
+    image_url = post.image
+    if post.image_file:
+        image_version = int(post.updated_at.timestamp()) if post.updated_at else 0
+        image_path = f"/api/blog-posts/{post.id}/image/?v={image_version}"
+        image_url = request.build_absolute_uri(image_path) if request else image_path
+
     return {
         "id": post.id,
         "slug": post.slug,
         "title": post.title,
         "description": post.description,
-        "image": post.image,
+        "image": image_url,
+        "imageUrl": post.image,
         "imageAlt": post.image_alt,
         "brief": post.brief,
         "keyword": post.keyword,
@@ -88,6 +95,58 @@ def normalize_keywords(keywords):
     if isinstance(keywords, list):
         return [str(keyword).strip() for keyword in keywords if str(keyword).strip()]
     return []
+
+
+def blog_payload(request):
+    """Read blog data from JSON or from a multipart form containing an image."""
+    if request.content_type and request.content_type.startswith("multipart/form-data"):
+        payload = request.POST.dict()
+        try:
+            payload["relatedKeywords"] = json.loads(payload.get("relatedKeywords", "[]"))
+            payload["sections"] = json.loads(payload.get("sections", "[]"))
+        except json.JSONDecodeError:
+            raise ValueError("Invalid blog sections or keywords.")
+        payload["isPublished"] = str(payload.get("isPublished", "true")).lower() == "true"
+        return payload
+
+    try:
+        return json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError as error:
+        raise ValueError("Invalid JSON.") from error
+
+
+def validate_blog_image(image):
+    if not image:
+        return None
+    allowed_types = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+    if getattr(image, "content_type", "") not in allowed_types:
+        return "Upload a JPG, PNG, WebP, or GIF image."
+    if image.size > 5 * 1024 * 1024:
+        return "The image must be 5 MB or smaller."
+    return None
+
+
+def apply_blog_payload(post, payload, image=None):
+    post.title = str(payload["title"]).strip()
+    post.slug = unique_blog_slug(post.title, payload.get("slug", ""), post.id)
+    post.description = str(payload["description"]).strip()
+    post.image = str(payload.get("image", "")).strip()
+    post.image_alt = str(payload.get("imageAlt", "")).strip()
+    post.brief = str(payload.get("brief", "")).strip()
+    post.keyword = str(payload.get("keyword", "")).strip()
+    post.related_keywords = normalize_keywords(payload.get("relatedKeywords", []))
+    post.sections = normalize_sections(payload.get("sections", []))
+    post.service_path = str(payload.get("servicePath", "/contact")).strip() or "/contact"
+    post.is_published = bool(payload.get("isPublished", True))
+
+    if image:
+        post.image_file = image.read()
+        post.image_filename = image.name
+        post.image_content_type = image.content_type
+    elif str(payload.get("removeImage", "false")).lower() == "true":
+        post.image_file = None
+        post.image_filename = ""
+        post.image_content_type = ""
 
 
 def serialize_application(application, request):
@@ -137,7 +196,7 @@ def jobs(request):
 @require_http_methods(["GET"])
 def blog_posts(request):
     posts = BlogPost.objects.filter(is_published=True)
-    return JsonResponse({"posts": [serialize_blog_post(post) for post in posts]})
+    return JsonResponse({"posts": [serialize_blog_post(post, request) for post in posts]})
 
 
 @require_http_methods(["GET"])
@@ -145,40 +204,71 @@ def blog_post_detail(request, slug):
     post = BlogPost.objects.filter(slug=slug, is_published=True).first()
     if not post:
         return JsonResponse({"error": "Blog post not found."}, status=404)
-    return JsonResponse({"post": serialize_blog_post(post)})
+    return JsonResponse({"post": serialize_blog_post(post, request)})
+
+
+@require_http_methods(["GET"])
+def blog_post_image(request, post_id):
+    post = BlogPost.objects.filter(id=post_id).only("image_file", "image_content_type", "image_filename").first()
+    if not post or not post.image_file:
+        raise Http404("Blog image not found.")
+    response = HttpResponse(bytes(post.image_file), content_type=post.image_content_type or "application/octet-stream")
+    response["Content-Disposition"] = f'inline; filename="{quote(post.image_filename or "blog-image")}"'
+    response["Cache-Control"] = "public, max-age=86400"
+    return response
 
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 def admin_blog_posts(request):
     if request.method == "GET":
-        return JsonResponse({"posts": [serialize_blog_post(post) for post in BlogPost.objects.all()]})
+        return JsonResponse({"posts": [serialize_blog_post(post, request) for post in BlogPost.objects.all()]})
 
     try:
-        payload = json.loads(request.body.decode("utf-8"))
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON."}, status=400)
+        payload = blog_payload(request)
+    except ValueError as error:
+        return JsonResponse({"error": str(error)}, status=400)
 
     required_fields = ["title", "description"]
     missing = [field for field in required_fields if not payload.get(field)]
     if missing:
         return JsonResponse({"error": f"Missing fields: {', '.join(missing)}"}, status=400)
 
-    sections = normalize_sections(payload.get("sections", []))
-    post = BlogPost.objects.create(
-        title=payload["title"].strip(),
-        slug=unique_blog_slug(payload["title"], payload.get("slug", "")),
-        description=payload["description"].strip(),
-        image=payload.get("image", "").strip(),
-        image_alt=payload.get("imageAlt", "").strip(),
-        brief=payload.get("brief", "").strip(),
-        keyword=payload.get("keyword", "").strip(),
-        related_keywords=normalize_keywords(payload.get("relatedKeywords", [])),
-        sections=sections,
-        service_path=payload.get("servicePath", "/contact").strip() or "/contact",
-        is_published=bool(payload.get("isPublished", True)),
-    )
-    return JsonResponse({"post": serialize_blog_post(post), "message": "Blog post saved."}, status=201)
+    image = request.FILES.get("imageFile")
+    image_error = validate_blog_image(image)
+    if image_error:
+        return JsonResponse({"error": image_error}, status=400)
+
+    post = BlogPost()
+    apply_blog_payload(post, payload, image)
+    post.save()
+    return JsonResponse({"post": serialize_blog_post(post, request), "message": "Blog post saved."}, status=201)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def admin_blog_post_detail(request, post_id):
+    post = BlogPost.objects.filter(id=post_id).first()
+    if not post:
+        return JsonResponse({"error": "Blog post not found."}, status=404)
+
+    try:
+        payload = blog_payload(request)
+    except ValueError as error:
+        return JsonResponse({"error": str(error)}, status=400)
+
+    missing = [field for field in ["title", "description"] if not payload.get(field)]
+    if missing:
+        return JsonResponse({"error": f"Missing fields: {', '.join(missing)}"}, status=400)
+
+    image = request.FILES.get("imageFile")
+    image_error = validate_blog_image(image)
+    if image_error:
+        return JsonResponse({"error": image_error}, status=400)
+
+    apply_blog_payload(post, payload, image)
+    post.save()
+    return JsonResponse({"post": serialize_blog_post(post, request), "message": "Blog post updated."})
 
 
 @csrf_exempt
@@ -190,7 +280,7 @@ def admin_blog_post_toggle(request, post_id):
 
     post.is_published = not post.is_published
     post.save(update_fields=["is_published", "updated_at"])
-    return JsonResponse({"post": serialize_blog_post(post), "isPublished": post.is_published})
+    return JsonResponse({"post": serialize_blog_post(post, request), "isPublished": post.is_published})
 
 
 @csrf_exempt

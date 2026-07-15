@@ -67,6 +67,7 @@ export type ApiBlogPost = {
   title: string;
   description: string;
   image: string;
+  imageUrl?: string;
   imageAlt: string;
   brief: string;
   keyword: string;
@@ -121,8 +122,17 @@ export async function getAdminBlogPosts() {
   return response.data.posts;
 }
 
-export async function createAdminBlogPost(payload: Omit<ApiBlogPost, "id" | "createdAt" | "updatedAt">) {
-  const response = await api.post<{ post: ApiBlogPost }>("/admin/blog-posts/", payload);
+export async function createAdminBlogPost(payload: FormData) {
+  const response = await api.post<{ post: ApiBlogPost }>("/admin/blog-posts/", payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data.post;
+}
+
+export async function updateAdminBlogPost(postId: number, payload: FormData) {
+  const response = await api.post<{ post: ApiBlogPost }>(`/admin/blog-posts/${postId}/`, payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data.post;
 }
 

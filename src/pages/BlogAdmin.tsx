@@ -1,11 +1,12 @@
-import { Eye, EyeOff, FileText, LogOut, Plus, RefreshCw } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { Eye, EyeOff, FileText, LogOut, Pencil, Plus, RefreshCw, Upload, X } from "lucide-react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   ApiBlogPost,
   createAdminBlogPost,
   getAdminBlogPosts,
   toggleAdminBlogPost,
+  updateAdminBlogPost,
 } from "../lib/api";
 import { useSeo } from "../lib/seo";
 
@@ -33,6 +34,10 @@ function parseSections(value: FormDataEntryValue | null) {
     .filter((section) => section.heading && section.body);
 }
 
+function formatSections(post: ApiBlogPost | null) {
+  return post?.sections.map((section) => `${section.heading}\n${section.body}`).join("\n---\n") ?? "";
+}
+
 export function BlogAdmin() {
   useSeo({
     title: "Blog Admin | Luxmorai Technologies",
@@ -45,6 +50,8 @@ export function BlogAdmin() {
   const [posts, setPosts] = useState<ApiBlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [editingPost, setEditingPost] = useState<ApiBlogPost | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
 
   function submitLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -89,36 +96,54 @@ export function BlogAdmin() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const payload = {
-      title: String(data.get("title") ?? ""),
-      slug: String(data.get("slug") ?? ""),
-      description: String(data.get("description") ?? ""),
-      image: String(data.get("image") ?? ""),
-      imageAlt: String(data.get("imageAlt") ?? ""),
-      brief: String(data.get("brief") ?? ""),
-      keyword: String(data.get("keyword") ?? ""),
-      relatedKeywords: parseKeywords(data.get("relatedKeywords")),
-      sections: parseSections(data.get("sections")),
-      servicePath: String(data.get("servicePath") ?? "/contact"),
-      isPublished: data.get("isPublished") === "on",
-    };
+    const sections = parseSections(data.get("sections"));
 
-    if (payload.sections.length === 0) {
+    if (sections.length === 0) {
       toast.error("Add at least one article section using the heading/body format.");
       return;
     }
 
+    data.set("relatedKeywords", JSON.stringify(parseKeywords(data.get("relatedKeywords"))));
+    data.set("sections", JSON.stringify(sections));
+    data.set("isPublished", data.get("isPublished") === "on" ? "true" : "false");
+    const selectedFile = data.get("imageFile");
+    if (editingPost && !editingPost.imageUrl && data.get("image") && (!(selectedFile instanceof File) || !selectedFile.size)) {
+      data.set("removeImage", "true");
+    }
+
     setSaving(true);
     try {
-      const post = await createAdminBlogPost(payload);
-      setPosts((current) => [post, ...current]);
-      toast.success("Blog post saved.");
+      const post = editingPost
+        ? await updateAdminBlogPost(editingPost.id, data)
+        : await createAdminBlogPost(data);
+      setPosts((current) =>
+        editingPost ? current.map((item) => (item.id === post.id ? post : item)) : [post, ...current],
+      );
+      toast.success(editingPost ? "Blog post updated." : "Blog post saved.");
       form.reset();
+      setEditingPost(null);
+      setImagePreview("");
     } catch {
       toast.error("Blog post could not be saved.");
     } finally {
       setSaving(false);
     }
+  }
+
+  function startEditing(post: ApiBlogPost) {
+    setEditingPost(post);
+    setImagePreview(post.image);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelEditing() {
+    setEditingPost(null);
+    setImagePreview("");
+  }
+
+  function previewImage(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    setImagePreview(file ? URL.createObjectURL(file) : editingPost?.image ?? "");
   }
 
   async function togglePost(post: ApiBlogPost) {
@@ -196,36 +221,52 @@ export function BlogAdmin() {
           <div className="admin-empty">Loading blog admin...</div>
         ) : (
           <div className="admin-grid blog-admin-grid">
-            <form className="admin-form" onSubmit={submitPost}>
-              <h2>Post a Blog</h2>
-              <input name="title" required placeholder="Blog title" />
-              <input name="slug" placeholder="SEO URL slug, optional" />
-              <textarea name="description" required rows={3} placeholder="SEO description / card description" />
-              <div className="admin-form-row">
-                <input name="keyword" placeholder="Main keyword or category" />
-                <input name="servicePath" defaultValue="/contact" placeholder="CTA path, example /contact" />
+            <form className="admin-form" key={editingPost?.id ?? "new"} onSubmit={submitPost}>
+              <div className="blog-admin-form-heading">
+                <h2>{editingPost ? "Edit Blog" : "Post a Blog"}</h2>
+                {editingPost && (
+                  <button className="admin-cancel-button" type="button" onClick={cancelEditing}>
+                    <X className="h-4 w-4" /> Cancel
+                  </button>
+                )}
               </div>
-              <input name="relatedKeywords" placeholder="Related keywords, comma separated" />
-              <input name="image" placeholder="Featured image URL" />
+              <input name="title" required defaultValue={editingPost?.title} placeholder="Blog title" />
+              <input name="slug" defaultValue={editingPost?.slug} placeholder="SEO URL slug, optional" />
+              <textarea name="description" required rows={3} defaultValue={editingPost?.description} placeholder="SEO description / card description" />
+              <div className="admin-form-row">
+                <input name="keyword" defaultValue={editingPost?.keyword} placeholder="Main keyword or category" />
+                <input name="servicePath" defaultValue={editingPost?.servicePath ?? "/contact"} placeholder="CTA path, example /contact" />
+              </div>
+              <input name="relatedKeywords" defaultValue={editingPost?.relatedKeywords.join(", ")} placeholder="Related keywords, comma separated" />
+              <input name="image" defaultValue={editingPost?.imageUrl} placeholder="Featured image URL (optional)" />
+              <label className="blog-image-upload">
+                <Upload className="h-5 w-5" />
+                <span>
+                  <strong>Upload from your computer</strong>
+                  JPG, PNG, WebP or GIF, up to 5 MB
+                </span>
+                <input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={previewImage} />
+              </label>
+              {imagePreview && <img className="blog-admin-image-preview" src={imagePreview} alt="Selected blog preview" />}
               <p className="admin-help">
-                Use a direct image URL, not a web page URL. Good links usually end with .jpg, .jpeg, .png, .webp, or come
-                from an image CDN like Unsplash.
+                Upload a local image or enter a direct image URL. A newly uploaded file replaces the current image.
               </p>
-              <input name="imageAlt" placeholder="Image alt text" />
-              <textarea name="brief" rows={4} placeholder="Brief overview shown inside the article" />
+              <input name="imageAlt" defaultValue={editingPost?.imageAlt} placeholder="Image alt text" />
+              <textarea name="brief" rows={4} defaultValue={editingPost?.brief} placeholder="Brief overview shown inside the article" />
               <textarea
                 name="sections"
                 required
                 rows={12}
+                defaultValue={formatSections(editingPost)}
                 placeholder={"Section heading\nSection body paragraph...\n---\nSecond section heading\nSecond section body paragraph..."}
               />
               <label className="admin-check">
-                <input name="isPublished" type="checkbox" defaultChecked />
+                <input name="isPublished" type="checkbox" defaultChecked={editingPost?.isPublished ?? true} />
                 Publish on blog page
               </label>
               <button className="primary-button" disabled={saving} type="submit">
-                <Plus className="h-4 w-4" />
-                {saving ? "Saving..." : "Publish Blog"}
+                {editingPost ? <Pencil className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                {saving ? "Saving..." : editingPost ? "Save Changes" : "Publish Blog"}
               </button>
             </form>
 
@@ -242,9 +283,14 @@ export function BlogAdmin() {
                         /blog/{post.slug} | {post.keyword || "No keyword"} | {post.isPublished ? "Published" : "Draft"}
                       </span>
                     </div>
-                    <button type="button" onClick={() => togglePost(post)}>
-                      Hide / Show
-                    </button>
+                    <div className="blog-admin-row-actions">
+                      <button type="button" onClick={() => startEditing(post)}>
+                        <Pencil className="h-4 w-4" /> Edit
+                      </button>
+                      <button type="button" onClick={() => togglePost(post)}>
+                        {post.isPublished ? "Hide" : "Show"}
+                      </button>
+                    </div>
                   </article>
                 ))
               )}

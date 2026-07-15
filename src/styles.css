@@ -4272,6 +4272,76 @@ textarea {
   line-height: 1.5;
 }
 
+.blog-admin-form-heading,
+.blog-admin-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.admin-cancel-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.blog-image-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border: 1px dashed #86b6da;
+  border-radius: 8px;
+  background: #f0f9ff;
+  color: #0b5cad;
+  cursor: pointer;
+  padding: 0.9rem;
+}
+
+.blog-image-upload span {
+  display: grid;
+  gap: 0.15rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.blog-image-upload strong {
+  color: #0b5cad;
+  font-size: 0.88rem;
+}
+
+.blog-image-upload input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.blog-admin-image-preview {
+  width: 100%;
+  max-height: 14rem;
+  border: 1px solid #dbe5ef;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.blog-admin-row-actions {
+  justify-content: flex-end;
+}
+
+.blog-admin-row-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .hiring-page {
   min-height: calc(100svh - 5rem);
   background:
