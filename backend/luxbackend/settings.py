@@ -179,12 +179,12 @@ FRONTEND_ORIGINS = os.environ.get(
 FRONTEND_SITE_URL = os.environ.get('FRONTEND_SITE_URL', 'https://www.luxmorai.com').rstrip('/')
 
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.zeptomail.in')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'true').lower() == 'true'
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() == 'true'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'emailapikey')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST = os.environ.get('ZEPTOMAIL_SMTP_HOST', 'smtp.zeptomail.in')
+EMAIL_PORT = int(os.environ.get('ZEPTOMAIL_SMTP_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('ZEPTOMAIL_USE_TLS', 'true').lower() == 'true'
+EMAIL_USE_SSL = os.environ.get('ZEPTOMAIL_USE_SSL', 'false').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('ZEPTOMAIL_SMTP_USER', 'emailapikey')
+EMAIL_HOST_PASSWORD = os.environ.get('ZEPTOMAIL_SMTP_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'careers@luxmorai.com')
 
 # Default primary key field type
