@@ -52,19 +52,6 @@
                 <p style="margin:0 0 18px;font-size:16px;line-height:1.7;">You can track your application anytime using your application number, email, and phone number.</p>
                 <a href="{{ track_url }}" style="display:inline-block;background:#0b5cad;color:#ffffff;text-decoration:none;padding:14px 20px;font-size:16px;font-weight:bold;">Track Application</a>
 
-                {% if show_hiring_link %}
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:26px 0;border:1px solid #bad7f5;background:#f4faff;">
-                  <tr>
-                    <td style="padding:22px;">
-                      <p style="margin:0 0 8px;color:#0b5cad;font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;">Shortlisted Assessment</p>
-                      <h2 style="margin:0 0 10px;color:#071528;font-size:24px;line-height:1.25;">Start your Luxmorai Round 1 hiring test</h2>
-                      <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.7;">Please open the hiring portal, verify your name and email, allow camera and microphone permission, and complete the assessment in one sitting.</p>
-                      <a href="{{ hiring_url }}" style="display:inline-block;background:#f59e0b;color:#071528;text-decoration:none;padding:14px 20px;font-size:16px;font-weight:bold;">Open Hiring Portal</a>
-                    </td>
-                  </tr>
-                </table>
-                {% endif %}
-
                 <p style="margin:26px 0 0;font-size:15px;line-height:1.7;"><strong>Important:</strong> Kindly DO NOT share your personal information, application number, OTP, login credentials, passwords, or assessment details with anyone. These are sensitive and confidential details.</p>
 
                 <p style="margin:22px 0 0;font-size:16px;line-height:1.7;">Regards,<br><strong>Recruitment Team</strong><br>Luxmorai Technologies Pvt Ltd</p>
@@ -85,7 +72,7 @@
                     </td>
                   </tr>
                 </table>
-                <p style="margin:18px 0 0;color:#64748b;font-size:12px;line-height:1.6;">If the button does not open, visit {{ track_url }} and enter application number {{ application_number }}{% if show_hiring_link %}. Hiring portal: {{ hiring_url }}{% endif %}.</p>
+                <p style="margin:18px 0 0;color:#64748b;font-size:12px;line-height:1.6;">If the button does not open, visit {{ track_url }} and enter application number {{ application_number }}.</p>
               </td>
             </tr>
           </table>

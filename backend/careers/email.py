@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.utils.text import slugify
 from django.utils.html import strip_tags
 
 APPLICATION_NUMBER_PREFIX = "9840570"
@@ -14,19 +13,10 @@ def get_application_number(application):
 def get_email_context(application):
     site_url = settings.FRONTEND_SITE_URL.rstrip("/")
     track_url = f"{site_url}/careers#career-track"
-    candidate_slug = slugify(application.name) or "candidate"
-    role_slug = slugify(application.role) or "assessment"
-    hiring_url = (
-        f"{site_url}/{candidate_slug}/hiring/{role_slug}"
-        f"?application={get_application_number(application)}"
-        f"&name={candidate_slug}"
-    )
     return {
         "application": application,
         "application_number": get_application_number(application),
         "track_url": track_url,
-        "hiring_url": hiring_url,
-        "show_hiring_link": application.status == "shortlisted",
         "logo_url": f"{site_url}/luxmorai-logo.png",
         "careers_url": f"{site_url}/careers",
         "contact_url": "mailto:hr@luxmorai.com",
