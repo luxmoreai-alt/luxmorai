@@ -2229,7 +2229,9 @@ textarea {
 }
 
 .career-empty-state {
+  display: grid;
   grid-column: 1 / -1;
+  gap: 0.45rem;
   border: 1px dashed #a9c3dd;
   border-radius: 8px;
   background: #ffffff;
@@ -2501,6 +2503,15 @@ textarea {
 .career-form textarea,
 .career-form button {
   grid-column: 1 / -1;
+}
+
+.career-empty-state strong {
+  color: #0f172a;
+}
+
+.career-empty-state span {
+  font-size: 0.9rem;
+  font-weight: 650;
 }
 
 .career-form .career-address-field {

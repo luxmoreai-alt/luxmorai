@@ -34,6 +34,13 @@ DJANGO_ADMIN_EMAIL=your-admin-email
 ENABLE_DJANGO_ADMIN=false
 ```
 
+Generate `DJANGO_SECRET_KEY` locally, copy the output directly into the backend
+Vercel environment settings, and redeploy. Never commit the generated value:
+
+```bash
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
 The Careers and Blog admin interfaces authenticate against Django and receive a
 short-lived signed token. Frontend environment variables are never suitable for
 passwords because all `VITE_*` values are included in the public browser bundle.

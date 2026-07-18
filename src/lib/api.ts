@@ -142,6 +142,9 @@ export async function getBlogPost(slug: string) {
 
 export async function getCareerJobs() {
   const response = await api.get<{ jobs: CareerJob[] }>("/jobs/");
+  if (!response.data || !Array.isArray(response.data.jobs)) {
+    throw new Error("The careers API returned an invalid jobs response.");
+  }
   return response.data.jobs;
 }
 

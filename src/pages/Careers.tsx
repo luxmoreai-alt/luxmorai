@@ -49,6 +49,7 @@ export function Careers() {
 
   const [jobs, setJobs] = useState<CareerJob[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
+  const [jobsLoadFailed, setJobsLoadFailed] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState("");
   const [detailJobId, setDetailJobId] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -64,6 +65,7 @@ export function Careers() {
   useEffect(() => {
     let mounted = true;
     setLoadingJobs(true);
+    setJobsLoadFailed(false);
 
     getCareerJobs()
       .then((items) => {
@@ -71,7 +73,9 @@ export function Careers() {
         setJobs(items);
       })
       .catch(() => {
+        if (!mounted) return;
         setJobs([]);
+        setJobsLoadFailed(true);
         toast.error("Could not load current openings. Please try again later.");
       })
       .finally(() => {
@@ -264,7 +268,13 @@ export function Careers() {
 
           <div className="career-openings-grid">
             {loadingJobs && <p className="career-empty-state">Loading current openings...</p>}
-            {!loadingJobs && jobs.length === 0 && (
+            {!loadingJobs && jobsLoadFailed && (
+              <div className="career-empty-state" role="alert">
+                <strong>Current openings are temporarily unavailable.</strong>
+                <span>The rest of the Careers page is still available. Please refresh shortly or contact hr@luxmorai.com.</span>
+              </div>
+            )}
+            {!loadingJobs && !jobsLoadFailed && jobs.length === 0 && (
               <p className="career-empty-state">Currently no openings are posted. Please check back soon.</p>
             )}
             {jobs.map((opening) => (
