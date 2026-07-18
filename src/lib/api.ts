@@ -230,6 +230,29 @@ export async function downloadAdminResume(resumePath: string, filename: string) 
   URL.revokeObjectURL(objectUrl);
 }
 
+export async function openAdminResume(resumePath: string) {
+  const previewWindow = window.open("about:blank", "_blank");
+  if (!previewWindow) {
+    throw new Error("The browser blocked the resume preview window.");
+  }
+
+  previewWindow.opener = null;
+  previewWindow.document.title = "Loading resume...";
+  previewWindow.document.body.textContent = "Loading resume...";
+
+  try {
+    const response = await api.get<Blob>(resumePath, { responseType: "blob" });
+    const contentType = String(response.headers["content-type"] ?? response.data.type ?? "application/octet-stream");
+    const previewBlob = response.data.type ? response.data : new Blob([response.data], { type: contentType });
+    const objectUrl = URL.createObjectURL(previewBlob);
+    previewWindow.location.replace(objectUrl);
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000);
+  } catch (error) {
+    previewWindow.close();
+    throw error;
+  }
+}
+
 export async function updateAdminApplicationStatus(
   applicationId: number,
   status: string,

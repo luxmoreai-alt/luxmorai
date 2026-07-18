@@ -1,7 +1,7 @@
 import {
   BriefcaseBusiness,
   CheckCircle2,
-  Download,
+  ExternalLink,
   FileText,
   LogOut,
   Mail,
@@ -18,7 +18,7 @@ import {
   authenticateAdmin,
   clearAdminSession,
   createAdminJob,
-  downloadAdminResume,
+  openAdminResume,
   getAdminApplications,
   getAdminJobs,
   hasAdminSession,
@@ -183,12 +183,12 @@ export function Admin() {
     }
   }
 
-  async function downloadResume(application: AdminApplication) {
+  async function previewResume(application: AdminApplication) {
     try {
-      await downloadAdminResume(application.resumeUrl, `${application.name}-resume`);
+      await openAdminResume(application.resumeUrl);
     } catch {
       if (!hasAdminSession()) setIsAuthenticated(false);
-      toast.error("Resume could not be downloaded.");
+      toast.error("Resume could not be opened. Allow pop-ups for this site and try again.");
     }
   }
 
@@ -357,9 +357,9 @@ export function Admin() {
                     <h2>{selectedApplication.name}</h2>
                     <p>{selectedApplication.role} | {selectedApplication.applicationNumber}</p>
                   </div>
-                  <button type="button" onClick={() => downloadResume(selectedApplication)}>
-                    <Download />
-                    Resume
+                  <button type="button" onClick={() => previewResume(selectedApplication)}>
+                    <ExternalLink />
+                    Open Resume
                   </button>
                 </div>
 

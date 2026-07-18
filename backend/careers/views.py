@@ -1,4 +1,5 @@
 import json
+import mimetypes
 import re
 from pathlib import Path
 from urllib.parse import quote
@@ -426,7 +427,7 @@ def admin_application_resume(request, application_id):
         raise Http404("Application not found.")
 
     filename = application.resume_filename or (application.resume.name.split("/")[-1] if application.resume else "resume")
-    content_type = "application/octet-stream"
+    content_type = application.resume_content_type or mimetypes.guess_type(filename)[0] or "application/octet-stream"
 
     if application.resume_file:
         content = bytes(application.resume_file)
@@ -450,7 +451,7 @@ def admin_application_resume(request, application_id):
         return JsonResponse({"error": "No resume uploaded for this application."}, status=404)
 
     response = HttpResponse(content, content_type=content_type)
-    response["Content-Disposition"] = f'attachment; filename="{quote(filename)}"'
+    response["Content-Disposition"] = f'inline; filename="{quote(filename)}"'
     response["Cache-Control"] = "private, no-store"
     response["X-Content-Type-Options"] = "nosniff"
     return response
