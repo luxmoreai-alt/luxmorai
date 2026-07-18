@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "/api";
+const configuredApiUrl = String(import.meta.env.VITE_API_URL ?? "").trim().replace(/\/+$/, "");
+const API_BASE_URL = configuredApiUrl || "/api";
 const ADMIN_TOKEN_KEY = "luxmorai-admin-token";
 
 export const api = axios.create({
