@@ -28,6 +28,8 @@ DJANGO_DEBUG=false
 DJANGO_SECRET_KEY=generate-a-long-random-secret
 DJANGO_ALLOWED_HOSTS=luxmoraiback.vercel.app
 FRONTEND_ORIGINS=https://luxmorai.com,https://www.luxmorai.com
+DATABASE_URL=postgresql://database-user:database-password@database-host/database-name?sslmode=require
+FRONTEND_SITE_URL=https://www.luxmorai.com
 DJANGO_ADMIN_USERNAME=your-admin-email
 DJANGO_ADMIN_PASSWORD=use-a-unique-strong-password
 DJANGO_ADMIN_EMAIL=your-admin-email

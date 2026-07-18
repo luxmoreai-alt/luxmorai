@@ -5,8 +5,8 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://luxmoraiback.vercel.app/api/:path*"
+      "source": "^/api/(.*)$",
+      "destination": "https://luxmoraiback.vercel.app/api/$1"
     },
     {
       "source": "/:path((?!api/).*)",
@@ -15,7 +15,7 @@
   ],
   "headers": [
     {
-      "source": "/api/:path*",
+      "source": "^/api/(.*)$",
       "headers": [
         { "key": "Cache-Control", "value": "private, no-store" },
         { "key": "X-Content-Type-Options", "value": "nosniff" }
