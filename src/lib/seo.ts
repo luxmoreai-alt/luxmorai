@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 
-const SITE_URL = "https://www.luxmorai.com";
+export const SITE_URL = "https://www.luxmorai.com";
+export const LINKEDIN_URL = "https://www.linkedin.com/company/luxmoraipvtltd/";
+const LOGO_URL = `${SITE_URL}/luxmorai-logo.jpeg`;
 
 type SeoConfig = {
   title: string;
@@ -72,14 +74,22 @@ export const siteSchema = {
     {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
-      name: "Luxmorai Technologies Pvt Ltd",
+      name: "Luxmorai Technologies",
       legalName: "Luxmorai Technologies Pvt Ltd",
-      alternateName: ["Luxmorai Technologies", "Luxmor AI", "Luxmorai AI Technologies"],
-      url: SITE_URL,
-      logo: `${SITE_URL}/luxmorai-logo.png`,
+      alternateName: ["Luxmorai Technologies Pvt Ltd", "Luxmor AI", "Luxmorai AI Technologies", "luxmorai.com"],
+      url: `${SITE_URL}/`,
+      logo: {
+        "@type": "ImageObject",
+        "@id": `${SITE_URL}/#logo`,
+        url: LOGO_URL,
+        contentUrl: LOGO_URL,
+        width: 1600,
+        height: 448,
+        caption: "Luxmorai Technologies",
+      },
+      image: { "@id": `${SITE_URL}/#logo` },
       email: "info@luxmorai.com",
       telephone: "+919884050511",
-      foundingDate: "2022",
       description:
         "Luxmorai Technologies Pvt Ltd builds AI solutions, custom software, CRM systems, mobile apps, web platforms, cloud systems, and workflow automation for businesses.",
       address: [
@@ -126,14 +136,25 @@ export const siteSchema = {
         "Mobile application development",
         "Cloud computing",
       ],
-      sameAs: ["https://www.linkedin.com/company/luxmoraipvtltd/"],
+      sameAs: [LINKEDIN_URL],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: `${SITE_URL}/`,
+      name: "Luxmorai Technologies",
+      alternateName: ["Luxmor AI", "Luxmorai Technologies Pvt Ltd", "luxmorai.com"],
+      description: "Official website of Luxmorai Technologies Pvt Ltd, an AI and software development company.",
+      inLanguage: "en-IN",
+      publisher: { "@id": `${SITE_URL}/#organization` },
     },
     {
       "@type": "LocalBusiness",
       "@id": `${SITE_URL}/#localbusiness`,
-      name: "Luxmorai Technologies Pvt Ltd",
-      image: `${SITE_URL}/luxmorai-logo.png`,
-      url: SITE_URL,
+      name: "Luxmorai Technologies",
+      image: { "@id": `${SITE_URL}/#logo` },
+      logo: { "@id": `${SITE_URL}/#logo` },
+      url: `${SITE_URL}/`,
       email: "info@luxmorai.com",
       telephone: "+919884050511",
       address: {
@@ -146,6 +167,8 @@ export const siteSchema = {
       },
       areaServed: ["Hyderabad", "Bengaluru", "Chennai", "India", "United States"],
       priceRange: "$$",
+      parentOrganization: { "@id": `${SITE_URL}/#organization` },
+      sameAs: [LINKEDIN_URL],
     },
   ],
 };
@@ -160,6 +183,8 @@ export function pageSchema(path: string, name: string, description: string) {
     url,
     name,
     description,
+    inLanguage: "en-IN",
+    about: { "@id": `${SITE_URL}/#organization` },
     isPartOf: {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
@@ -177,7 +202,7 @@ export function useSeo({
   description,
   path = "/",
   robots = "index, follow",
-  image = "/luxmorai-logo.png",
+  image = "/luxmorai-logo.jpeg",
   type = "website",
   structuredData,
 }: SeoConfig) {

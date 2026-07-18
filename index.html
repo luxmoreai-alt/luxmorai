@@ -20,7 +20,7 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.luxmorai.com/" />
-    <meta property="og:image" content="https://www.luxmorai.com/luxmorai-logo.png" />
+    <meta property="og:image" content="https://www.luxmorai.com/luxmorai-logo.jpeg" />
     <meta property="og:site_name" content="Luxmorai Technologies" />
     <meta property="og:locale" content="en_IN" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -29,24 +29,65 @@
       name="twitter:description"
       content="Luxmorai Technologies Pvt Ltd builds AI solutions, custom software, CRM systems, workflow automation, web platforms, mobile apps, and cloud solutions."
     />
-    <meta name="twitter:image" content="https://www.luxmorai.com/luxmorai-logo.png" />
+    <meta name="twitter:image" content="https://www.luxmorai.com/luxmorai-logo.jpeg" />
     <link rel="canonical" href="https://www.luxmorai.com/" />
+    <link rel="me" href="https://www.linkedin.com/company/luxmoraipvtltd/" />
     <link rel="icon" type="image/png" href="/luxmorai-logo.png" />
     <link rel="shortcut icon" type="image/png" href="/luxmorai-logo.png" />
     <link rel="apple-touch-icon" href="/luxmorai-logo.png" />
     <script id="brand-structured-data" type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Organization",
-        "@id": "https://www.luxmorai.com/#organization",
-        "name": "Luxmorai Technologies Pvt Ltd",
-        "legalName": "Luxmorai Technologies Pvt Ltd",
-        "alternateName": ["Luxmorai Technologies", "Luxmor AI", "Luxmorai AI Technologies"],
-        "url": "https://www.luxmorai.com/",
-        "logo": "https://www.luxmorai.com/luxmorai-logo.png",
-        "email": "info@luxmorai.com",
-        "telephone": "+919884050511",
-        "sameAs": ["https://www.linkedin.com/company/luxmoraipvtltd/"]
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.luxmorai.com/#organization",
+            "name": "Luxmorai Technologies",
+            "legalName": "Luxmorai Technologies Pvt Ltd",
+            "alternateName": ["Luxmorai Technologies Pvt Ltd", "Luxmor AI", "Luxmorai AI Technologies", "luxmorai.com"],
+            "url": "https://www.luxmorai.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "@id": "https://www.luxmorai.com/#logo",
+              "url": "https://www.luxmorai.com/luxmorai-logo.jpeg",
+              "contentUrl": "https://www.luxmorai.com/luxmorai-logo.jpeg",
+              "width": 1600,
+              "height": 448,
+              "caption": "Luxmorai Technologies"
+            },
+            "image": { "@id": "https://www.luxmorai.com/#logo" },
+            "description": "Luxmorai Technologies Pvt Ltd builds AI solutions, custom software, CRM systems, workflow automation, web platforms, mobile apps, and cloud solutions.",
+            "email": "info@luxmorai.com",
+            "telephone": "+919884050511",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "19/3RT, Line 2, Street 5, Prakash Nagar, Begumpet",
+              "addressLocality": "Hyderabad",
+              "addressRegion": "Telangana",
+              "postalCode": "500016",
+              "addressCountry": "IN"
+            },
+            "sameAs": ["https://www.linkedin.com/company/luxmoraipvtltd/"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.luxmorai.com/#website",
+            "url": "https://www.luxmorai.com/",
+            "name": "Luxmorai Technologies",
+            "alternateName": ["Luxmor AI", "Luxmorai Technologies Pvt Ltd", "luxmorai.com"],
+            "inLanguage": "en-IN",
+            "publisher": { "@id": "https://www.luxmorai.com/#organization" }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://www.luxmorai.com/#webpage",
+            "url": "https://www.luxmorai.com/",
+            "name": "Luxmorai Technologies | AI, Software, CRM & Automation Company",
+            "isPartOf": { "@id": "https://www.luxmorai.com/#website" },
+            "about": { "@id": "https://www.luxmorai.com/#organization" },
+            "inLanguage": "en-IN"
+          }
+        ]
       }
     </script>
     <title>Luxmorai Technologies | AI, Software, CRM & Automation Company</title>

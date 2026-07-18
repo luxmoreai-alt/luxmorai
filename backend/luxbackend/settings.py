@@ -14,6 +14,8 @@ import os
 from pathlib import Path
 from urllib.parse import parse_qsl, urlparse
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,22 +34,26 @@ for env_file in (BASE_DIR / '.env', BASE_DIR.parent / '.env'):
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'django-insecure--lsp$fbwf&2)j=z!v+78qd9^kks=#&510hbj_*me-on7eg+8)l',
-)
+IS_PRODUCTION = bool(os.environ.get('VERCEL')) or os.environ.get('DJANGO_ENV') == 'production'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    if IS_PRODUCTION:
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY must be set in production.')
+    SECRET_KEY = 'django-insecure-local-development-only-change-me'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'true').lower() == 'true'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'false' if IS_PRODUCTION else 'true').lower() == 'true'
 
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
         'DJANGO_ALLOWED_HOSTS',
-        'localhost,127.0.0.1,192.168.0.3,luxmoraiback.vercel.app,.vercel.app',
+        'localhost,127.0.0.1,192.168.0.3,luxmoraiback.vercel.app',
     ).split(',')
     if host.strip()
 ]
+if os.environ.get('VERCEL_URL'):
+    ALLOWED_HOSTS.append(os.environ['VERCEL_URL'])
 
 
 # Application definition
@@ -163,6 +169,9 @@ STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = Path('/tmp/media') if os.environ.get('VERCEL') else BASE_DIR / 'media'
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 7 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 6 * 1024 * 1024
+
 FRONTEND_ORIGINS = os.environ.get(
     'FRONTEND_ORIGINS',
     (
@@ -171,10 +180,28 @@ FRONTEND_ORIGINS = os.environ.get(
         'http://192.168.0.3:5173,'
         'https://luxmorai.com,'
         'https://www.luxmorai.com,'
-        'https://luxmorai.vercel.app,'
-        '.vercel.app'
+        'https://luxmorai.vercel.app'
     ),
 ).split(',')
+
+ADMIN_API_TOKEN_MAX_AGE = int(os.environ.get('ADMIN_API_TOKEN_MAX_AGE', '28800'))
+ENABLE_DJANGO_ADMIN = os.environ.get('ENABLE_DJANGO_ADMIN', 'false' if IS_PRODUCTION else 'true').lower() == 'true'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = IS_PRODUCTION
+SESSION_COOKIE_SECURE = IS_PRODUCTION
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = IS_PRODUCTION
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+SECURE_HSTS_SECONDS = 31536000 if IS_PRODUCTION else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = IS_PRODUCTION
+SECURE_HSTS_PRELOAD = IS_PRODUCTION
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'
 
 FRONTEND_SITE_URL = os.environ.get('FRONTEND_SITE_URL', 'https://www.luxmorai.com').rstrip('/')
 

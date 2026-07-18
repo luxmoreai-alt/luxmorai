@@ -16,8 +16,17 @@ class JobAdmin(admin.ModelAdmin):
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "role", "email", "phone", "status", "created_at", "resume_link")
     list_filter = ("status", "role", "created_at")
-    search_fields = ("name", "email", "phone", "role")
-    readonly_fields = ("created_at", "resume_link")
+    search_fields = (
+        "name",
+        "email",
+        "phone",
+        "role",
+        "current_address",
+        "current_postal_code",
+        "permanent_address",
+        "permanent_postal_code",
+    )
+    readonly_fields = ("created_at", "consent_at", "resume_link")
 
     @admin.display(description="Resume")
     def resume_link(self, obj):
@@ -40,4 +49,4 @@ class InquiryAdmin(admin.ModelAdmin):
     list_display = ("name", "service", "email", "phone", "created_at")
     list_filter = ("service", "created_at")
     search_fields = ("name", "email", "phone", "service", "message")
-    readonly_fields = ("created_at",)
+    readonly_fields = ("created_at", "consent_at")

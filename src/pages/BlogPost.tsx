@@ -79,7 +79,7 @@ export function BlogPost() {
               name: "Luxmorai Technologies Pvt Ltd",
               logo: {
                 "@type": "ImageObject",
-                url: "https://www.luxmorai.com/luxmorai-logo.png",
+                url: "https://www.luxmorai.com/luxmorai-logo.jpeg",
               },
             },
             mainEntityOfPage: `https://www.luxmorai.com/blog/${post.slug}`,

@@ -3,16 +3,15 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   ApiBlogPost,
+  authenticateAdmin,
+  clearAdminSession,
   createAdminBlogPost,
   getAdminBlogPosts,
+  hasAdminSession,
   toggleAdminBlogPost,
   updateAdminBlogPost,
 } from "../lib/api";
 import { useSeo } from "../lib/seo";
-
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? "careers@admin.com";
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? "Careers@admin@2026";
-const BLOG_ADMIN_AUTH_KEY = "luxmorai-blog-admin-authenticated";
 
 function parseKeywords(value: FormDataEntryValue | null) {
   return String(value ?? "")
@@ -46,31 +45,32 @@ export function BlogAdmin() {
     robots: "noindex, nofollow",
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem(BLOG_ADMIN_AUTH_KEY) === "true");
+  const [isAuthenticated, setIsAuthenticated] = useState(hasAdminSession);
   const [posts, setPosts] = useState<ApiBlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editingPost, setEditingPost] = useState<ApiBlogPost | null>(null);
   const [imagePreview, setImagePreview] = useState("");
 
-  function submitLogin(event: FormEvent<HTMLFormElement>) {
+  async function submitLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email") ?? "").trim();
     const password = String(data.get("password") ?? "");
 
-    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+    try {
+      await authenticateAdmin(email, password);
+    } catch {
       toast.error("Invalid blog admin credentials.");
       return;
     }
 
-    localStorage.setItem(BLOG_ADMIN_AUTH_KEY, "true");
     setIsAuthenticated(true);
     toast.success("Blog admin login successful.");
   }
 
   function logout() {
-    localStorage.removeItem(BLOG_ADMIN_AUTH_KEY);
+    clearAdminSession();
     setIsAuthenticated(false);
     setPosts([]);
   }
@@ -80,6 +80,9 @@ export function BlogAdmin() {
     try {
       setPosts(await getAdminBlogPosts());
     } catch {
+      if (!hasAdminSession()) {
+        setIsAuthenticated(false);
+      }
       toast.error("Blog posts could not be loaded.");
     } finally {
       setLoading(false);

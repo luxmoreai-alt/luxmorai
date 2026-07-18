@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "https://luxmoraiback.vercel.app/api";
+const API_BASE_URL = "/api";
+const ADMIN_TOKEN_KEY = "luxmorai-admin-token";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -10,12 +11,54 @@ export const api = axios.create({
   },
 });
 
+function getAdminToken() {
+  return sessionStorage.getItem(ADMIN_TOKEN_KEY);
+}
+
+export function hasAdminSession() {
+  return Boolean(getAdminToken());
+}
+
+export function clearAdminSession() {
+  sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+}
+
+api.interceptors.request.use((config) => {
+  const token = getAdminToken();
+  if (token && String(config.url ?? "").includes("/admin/")) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && String(error.config?.url ?? "").includes("/admin/")) {
+      clearAdminSession();
+    }
+    return Promise.reject(error);
+  },
+);
+
+export async function authenticateAdmin(email: string, password: string) {
+  const response = await api.post<{ token: string; expiresIn: number }>("/admin/auth/login/", { email, password });
+  sessionStorage.setItem(ADMIN_TOKEN_KEY, response.data.token);
+  return response.data;
+}
+
+export async function verifyAdminSession() {
+  const response = await api.get<{ authenticated: boolean }>("/admin/auth/session/");
+  return response.data.authenticated;
+}
+
 export type InquiryPayload = {
   name: string;
   email: string;
   phone: string;
   service: string;
   message: string;
+  privacyConsent: boolean;
 };
 
 export type CareerJob = {
@@ -38,6 +81,10 @@ export type AdminApplication = {
   name: string;
   email: string;
   phone: string;
+  currentAddress: string;
+  currentPostalCode: string;
+  permanentAddress: string;
+  permanentPostalCode: string;
   relevantExperience: string;
   totalExperience: string;
   currentCtc: string;
@@ -154,6 +201,18 @@ export async function toggleAdminJob(jobId: number) {
 export async function getAdminApplications() {
   const response = await api.get<{ applications: AdminApplication[] }>("/admin/applications/");
   return response.data.applications;
+}
+
+export async function downloadAdminResume(resumePath: string, filename: string) {
+  const response = await api.get<Blob>(resumePath, { responseType: "blob" });
+  const objectUrl = URL.createObjectURL(response.data);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
 }
 
 export async function updateAdminApplicationStatus(

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils.cache import patch_vary_headers
 from urllib.parse import urlparse
 
 
@@ -39,6 +40,10 @@ class SimpleCorsMiddleware:
         if allowed:
             response["Access-Control-Allow-Origin"] = origin
             response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-            response["Access-Control-Allow-Headers"] = "Content-Type"
+            response["Access-Control-Allow-Headers"] = "Authorization, Content-Type"
+            response["Access-Control-Max-Age"] = "600"
+            patch_vary_headers(response, ("Origin",))
+
+        response["Permissions-Policy"] = "camera=(self), microphone=(self), geolocation=()"
 
         return response

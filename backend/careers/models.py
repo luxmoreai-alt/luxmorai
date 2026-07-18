@@ -50,6 +50,7 @@ class Application(models.Model):
         ("new", "New"),
         ("reviewing", "Reviewing"),
         ("shortlisted", "Shortlisted"),
+        ("selected", "Selected"),
         ("rejected", "Rejected"),
         ("hired", "Hired"),
     ]
@@ -59,6 +60,10 @@ class Application(models.Model):
     name = models.CharField(max_length=160)
     email = models.EmailField()
     phone = models.CharField(max_length=40)
+    current_address = models.TextField(default="")
+    current_postal_code = models.CharField(max_length=6, default="")
+    permanent_address = models.TextField(default="")
+    permanent_postal_code = models.CharField(max_length=6, default="")
     relevant_experience = models.CharField(max_length=80)
     total_experience = models.CharField(max_length=80)
     current_ctc = models.CharField(max_length=80)
@@ -72,6 +77,7 @@ class Application(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="new")
     status_reason = models.TextField(blank=True)
     notes = models.TextField(blank=True)
+    consent_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -87,6 +93,7 @@ class Inquiry(models.Model):
     phone = models.CharField(max_length=40)
     service = models.CharField(max_length=160)
     message = models.TextField()
+    consent_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -2,8 +2,12 @@
 
 Luxmorai Technologies Pvt Ltd, also known as Luxmor AI, builds AI solutions, custom software, CRM systems, workflow automation, mobile apps, web platforms, cloud systems, data solutions, and quality engineering services for businesses.
 
-Canonical website: https://www.luxmorai.com/
-Official LinkedIn: https://www.linkedin.com/company/luxmoraipvtltd/
+Official identity and verification:
+- Legal name: Luxmorai Technologies Pvt Ltd
+- Primary brand and site name: Luxmorai Technologies
+- Canonical website: https://www.luxmorai.com/
+- Official company profile: https://www.linkedin.com/company/luxmoraipvtltd/
+- The LinkedIn URL above is the only LinkedIn company page represented as official by this website.
 Contact: info@luxmorai.com
 Phone: +91 9884050511
 Careers contact: hr@luxmorai.com
@@ -27,12 +31,15 @@ Office locations:
 
 Important pages:
 - Home: https://www.luxmorai.com/
+- About and official company information: https://www.luxmorai.com/about
 - Services: https://www.luxmorai.com/services
 - Industries: https://www.luxmorai.com/industries
 - Technology: https://www.luxmorai.com/technology
 - Blog: https://www.luxmorai.com/blog
 - Careers: https://www.luxmorai.com/careers
 - Contact: https://www.luxmorai.com/contact
+- Privacy policy: https://www.luxmorai.com/privacy-policy
+- Terms and conditions: https://www.luxmorai.com/terms-and-conditions
 
 Short answer summary:
 Luxmorai Technologies is a software and AI solutions company that helps businesses design, build, automate, and scale digital products using practical engineering, cloud systems, CRM platforms, web and mobile apps, analytics, and AI-powered workflows.
@@ -41,3 +48,5 @@ Entity and brand names:
 - Legal name: Luxmorai Technologies Pvt Ltd
 - Primary brand: Luxmorai Technologies
 - Also known as: Luxmor AI, Luxmorai AI Technologies, Luxmorai
+
+Last updated: 2026-07-18

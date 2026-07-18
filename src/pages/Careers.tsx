@@ -1,5 +1,6 @@
 import { BriefcaseBusiness, Lightbulb, Rocket, Send, ShieldCheck, Users } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import {
   CareerJob,
@@ -350,6 +351,50 @@ export function Careers() {
               Phone No *
               <input name="phone" required />
             </label>
+            <label className="career-address-field">
+              Current Address *
+              <textarea
+                name="currentAddress"
+                required
+                rows={3}
+                autoComplete="street-address"
+                placeholder="House/flat, street, area, city, district and state"
+              />
+            </label>
+            <label>
+              Current PIN Code *
+              <input
+                name="currentPostalCode"
+                required
+                inputMode="numeric"
+                pattern="[0-9]{6}"
+                maxLength={6}
+                autoComplete="postal-code"
+                placeholder="6-digit PIN code"
+                title="Enter exactly 6 digits"
+              />
+            </label>
+            <label className="career-address-field">
+              Permanent Address *
+              <textarea
+                name="permanentAddress"
+                required
+                rows={3}
+                placeholder="House/flat, street, village/area, city, district and state"
+              />
+            </label>
+            <label>
+              Permanent PIN Code *
+              <input
+                name="permanentPostalCode"
+                required
+                inputMode="numeric"
+                pattern="[0-9]{6}"
+                maxLength={6}
+                placeholder="6-digit PIN code"
+                title="Enter exactly 6 digits"
+              />
+            </label>
             <label>
               Relevant Exp *
               <input name="relevantExperience" required />
@@ -395,6 +440,14 @@ export function Careers() {
             <label>
               Message
               <textarea name="message" rows={4} />
+            </label>
+            <label className="form-consent career-form-consent">
+              <input name="applicationConsent" required type="checkbox" />
+              <span>
+                I confirm that the information is accurate and agree to the <Link to="/terms-and-conditions">Terms and
+                Conditions</Link> and <Link to="/privacy-policy">Privacy Policy</Link>, including processing my data for
+                recruitment.
+              </span>
             </label>
             <input name="role" type="hidden" value={jobs.find((job) => String(job.id) === selectedJobId)?.title ?? ""} />
             <button className="primary-button light" disabled={submitting || jobs.length === 0} type="submit">

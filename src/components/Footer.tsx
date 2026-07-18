@@ -79,8 +79,12 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-slate-400">
-        © 2026 Luxmorai Technologies Pvt Ltd. All rights reserved.
+      <div className="footer-legal border-t border-white/10 px-4 py-5 text-xs text-slate-400">
+        <span>© 2026 Luxmorai Technologies Pvt Ltd. All rights reserved.</span>
+        <nav aria-label="Legal links">
+          <Link to="/privacy-policy">Privacy Policy</Link>
+          <Link to="/terms-and-conditions">Terms and Conditions</Link>
+        </nav>
       </div>
     </footer>
   );

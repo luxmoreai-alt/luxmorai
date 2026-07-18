@@ -19,7 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { industries } from "../data/industries";
-import { pageSchema, siteSchema, useSeo } from "../lib/seo";
+import { LINKEDIN_URL, pageSchema, siteSchema, useSeo } from "../lib/seo";
 
 const services = [
   {
@@ -80,7 +80,7 @@ const highlights = [
   ["24/7", "Support mindset"],
 ];
 
-const brandFaqs = [
+const brandFaqs: Array<{ question: string; answer: string; link?: { href: string; label: string } }> = [
   {
     question: "What is Luxmorai Technologies?",
     answer:
@@ -100,6 +100,12 @@ const brandFaqs = [
     question: "How can I contact Luxmorai Technologies?",
     answer:
       "Email info@luxmorai.com, call +91 9884050511, use the contact page, or connect with Luxmorai Technologies on LinkedIn.",
+  },
+  {
+    question: "What is the official LinkedIn page for Luxmorai Technologies?",
+    answer:
+      "The official LinkedIn company page for Luxmorai Technologies Pvt Ltd is the Luxmorai Technologies page at linkedin.com/company/luxmoraipvtltd/.",
+    link: { href: LINKEDIN_URL, label: "Visit the official Luxmorai Technologies LinkedIn page" },
   },
 ];
 
@@ -175,17 +181,6 @@ export function Home() {
         "Luxmorai Technologies | AI, Software, CRM & Automation Company",
         "Luxmorai Technologies Pvt Ltd builds AI solutions, custom software, CRM systems, workflow automation, web platforms, mobile apps, and cloud solutions.",
       ),
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "@id": "https://www.luxmorai.com/#website",
-        name: "Luxmorai Technologies",
-        alternateName: ["Luxmorai Technologies Pvt Ltd", "Luxmor AI", "Luxmorai AI Technologies"],
-        url: "https://www.luxmorai.com",
-        publisher: {
-          "@id": "https://www.luxmorai.com/#organization",
-        },
-      },
       {
         "@context": "https://schema.org",
         "@type": "FAQPage",
@@ -407,7 +402,12 @@ export function Home() {
                 transition={{ delay: index * 0.06 }}
               >
                 <h3 className="text-lg font-black text-slate-950">{faq.question}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{faq.answer}</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  {faq.answer}
+                  {faq.link && (
+                    <> <a className="font-bold text-sky-700 underline underline-offset-4" href={faq.link.href} target="_blank" rel="me noopener noreferrer">{faq.link.label}</a>.</>
+                  )}
+                </p>
               </motion.article>
             ))}
           </div>

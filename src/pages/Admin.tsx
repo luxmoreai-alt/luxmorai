@@ -15,18 +15,21 @@ import { toast } from "sonner";
 import {
   AdminApplication,
   CareerJob,
+  authenticateAdmin,
+  clearAdminSession,
   createAdminJob,
+  downloadAdminResume,
   getAdminApplications,
   getAdminJobs,
+  hasAdminSession,
   toggleAdminJob,
   updateAdminApplicationStatus,
 } from "../lib/api";
 import { useSeo } from "../lib/seo";
 
-const statuses = ["new", "reviewing", "shortlisted", "rejected", "hired"];
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? "careers@admin.com";
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? "Careers@admin@2026";
-const ADMIN_AUTH_KEY = "luxmorai-admin-authenticated";
+const SELECTED_STATUS_MESSAGE =
+  "Congratulations! You have been selected. Your offer letter will be released within one business day after you receive this email.";
+const statuses = ["new", "reviewing", "shortlisted", "selected", "rejected", "hired"];
 
 export function Admin() {
   useSeo({
@@ -36,7 +39,7 @@ export function Admin() {
     robots: "noindex, nofollow",
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem(ADMIN_AUTH_KEY) === "true");
+  const [isAuthenticated, setIsAuthenticated] = useState(hasAdminSession);
   const [jobs, setJobs] = useState<CareerJob[]>([]);
   const [applications, setApplications] = useState<AdminApplication[]>([]);
   const [activeView, setActiveView] = useState<"jobs" | "applications">("jobs");
@@ -58,6 +61,10 @@ export function Admin() {
         application.name,
         application.email,
         application.phone,
+        application.currentAddress,
+        application.currentPostalCode,
+        application.permanentAddress,
+        application.permanentPostalCode,
         application.role,
       ].some((value) => value.toLowerCase().includes(query)),
     );
@@ -74,24 +81,25 @@ export function Admin() {
   const openJobs = jobs.length;
   const newApplications = applications.filter((application) => application.status === "new").length;
 
-  function submitLogin(event: FormEvent<HTMLFormElement>) {
+  async function submitLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email") ?? "").trim();
     const password = String(data.get("password") ?? "");
 
-    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+    try {
+      await authenticateAdmin(email, password);
+    } catch {
       toast.error("Invalid admin credentials.");
       return;
     }
 
-    localStorage.setItem(ADMIN_AUTH_KEY, "true");
     setIsAuthenticated(true);
     toast.success("Admin login successful.");
   }
 
   function logout() {
-    localStorage.removeItem(ADMIN_AUTH_KEY);
+    clearAdminSession();
     setIsAuthenticated(false);
     setJobs([]);
     setApplications([]);
@@ -105,6 +113,9 @@ export function Admin() {
       setApplications(applicationItems);
       setSelectedApplicationId((current) => current ?? applicationItems[0]?.id ?? null);
     } catch {
+      if (!hasAdminSession()) {
+        setIsAuthenticated(false);
+      }
       toast.error("Admin data could not be loaded. Check that Django is running.");
     } finally {
       setLoading(false);
@@ -169,6 +180,15 @@ export function Admin() {
       toast.success(result.emailSent ? "Application updated and email sent." : "Application updated.");
     } catch {
       toast.error("Application could not be updated.");
+    }
+  }
+
+  async function downloadResume(application: AdminApplication) {
+    try {
+      await downloadAdminResume(application.resumeUrl, `${application.name}-resume`);
+    } catch {
+      if (!hasAdminSession()) setIsAuthenticated(false);
+      toast.error("Resume could not be downloaded.");
     }
   }
 
@@ -302,7 +322,7 @@ export function Admin() {
                 <input
                   value={applicationSearch}
                   onChange={(event) => setApplicationSearch(event.target.value)}
-                  placeholder="Name, email, phone, or application number"
+                  placeholder="Name, email, phone, address, PIN, or application number"
                   type="search"
                 />
               </label>
@@ -337,10 +357,10 @@ export function Admin() {
                     <h2>{selectedApplication.name}</h2>
                     <p>{selectedApplication.role} | {selectedApplication.applicationNumber}</p>
                   </div>
-                  <a href={selectedApplication.resumeUrl} target="_blank" rel="noreferrer">
+                  <button type="button" onClick={() => downloadResume(selectedApplication)}>
                     <Download />
                     Resume
-                  </a>
+                  </button>
                 </div>
 
                 <div className="admin-candidate-meta">
@@ -356,10 +376,29 @@ export function Admin() {
                   <span>Expected CTC: {selectedApplication.expectedCtc}</span>
                 </div>
 
+                <div className="admin-address-grid">
+                  <div>
+                    <strong>Current Address</strong>
+                    <p>{selectedApplication.currentAddress || "Not provided"}</p>
+                    <span>PIN Code: {selectedApplication.currentPostalCode || "Not provided"}</span>
+                  </div>
+                  <div>
+                    <strong>Permanent Address</strong>
+                    <p>{selectedApplication.permanentAddress || "Not provided"}</p>
+                    <span>PIN Code: {selectedApplication.permanentPostalCode || "Not provided"}</span>
+                  </div>
+                </div>
+
                 <div className="admin-status-row">
                   <select
                     value={status}
-                    onChange={(event) => setStatus(event.target.value)}
+                    onChange={(event) => {
+                      const nextStatus = event.target.value;
+                      setStatus(nextStatus);
+                      if (nextStatus === "selected") {
+                        setStatusReason(SELECTED_STATUS_MESSAGE);
+                      }
+                    }}
                   >
                     {statuses.map((status) => (
                       <option key={status} value={status}>

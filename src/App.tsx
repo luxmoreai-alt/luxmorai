@@ -11,10 +11,12 @@ import { Home } from "./pages/Home";
 import { HiringPortal } from "./pages/HiringPortal";
 import { Industries } from "./pages/Industries";
 import { IndustryDetail } from "./pages/IndustryDetail";
+import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { ServiceDetail } from "./pages/ServiceDetail";
 import { Services } from "./pages/Services";
 import { Technology } from "./pages/Technology";
 import { TechnologyDetail } from "./pages/TechnologyDetail";
+import { TermsAndConditions } from "./pages/TermsAndConditions";
 
 export default function App() {
   return (
@@ -33,6 +35,8 @@ export default function App() {
         <Route path="blog-admin" element={<BlogAdmin />} />
         <Route path="careers" element={<Careers />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="admin" element={<Admin />} />
         <Route path="hiring" element={<HiringPortal />} />
         <Route path=":candidateSlug/hiring/:roleSlug" element={<HiringPortal />} />

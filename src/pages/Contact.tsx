@@ -1,5 +1,6 @@
 import { Mail, Phone, Send } from "lucide-react";
 import { FormEvent, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Section } from "../components/Section";
 import { services } from "../data/services";
@@ -32,6 +33,7 @@ export function Contact() {
       phone: String(data.get("phone") ?? ""),
       service: String(data.get("service") ?? ""),
       message: String(data.get("message") ?? ""),
+      privacyConsent: data.get("privacyConsent") === "on",
     };
 
     setLoading(true);
@@ -88,6 +90,13 @@ export function Contact() {
             ))}
           </select>
           <textarea name="message" required placeholder="Message" rows={5} />
+          <label className="form-consent form-consent-dark">
+            <input name="privacyConsent" required type="checkbox" />
+            <span>
+              I have read the <Link to="/privacy-policy">Privacy Policy</Link> and consent to Luxmorai processing my
+              information to respond to this inquiry.
+            </span>
+          </label>
           <button className="primary-button light w-fit" disabled={loading} type="submit">
             <Send className="h-4 w-4" />
             {loading ? "Sending..." : "Submit Inquiry"}

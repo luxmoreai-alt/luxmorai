@@ -1,6 +1,6 @@
-import { ArrowRight, BadgeCheck, Building2, Check, ChevronRight, Lightbulb, MapPin, Rocket, ShieldCheck, Timer, UsersRound } from "lucide-react";
+import { ArrowRight, BadgeCheck, Building2, Check, ChevronRight, Globe2, Lightbulb, Linkedin, Mail, MapPin, Rocket, ShieldCheck, Timer, UsersRound } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useSeo } from "../lib/seo";
+import { LINKEDIN_URL, pageSchema, siteSchema, useSeo } from "../lib/seo";
 
 const pillars = [
   {
@@ -63,6 +63,14 @@ export function About() {
     description:
       "Learn about Luxmorai Technologies Pvt Ltd, an AI and software development company with offices in Hyderabad, Bengaluru, and Chennai, India.",
     path: "/about",
+    structuredData: [
+      siteSchema,
+      pageSchema(
+        "/about",
+        "About Luxmorai Technologies | AI & Software Development Company",
+        "Official company information for Luxmorai Technologies Pvt Ltd, an AI and software development company in India.",
+      ),
+    ],
   });
 
   return (
@@ -70,7 +78,7 @@ export function About() {
       <section className="about-hero">
         <div className="about-hero-overlay" />
         <div className="relative mx-auto grid min-h-[370px] max-w-7xl content-center justify-items-center px-4 text-center sm:px-6 lg:px-8">
-          <h1>About Us</h1>
+          <h1>About Luxmorai Technologies</h1>
           <div className="about-breadcrumb">
             <Link to="/">Home</Link>
             <ChevronRight className="h-4 w-4" />
@@ -83,7 +91,7 @@ export function About() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.95fr_1fr] lg:px-8">
           <div className="about-logo-panel">
             <div className="about-logo-orbit">
-              <img src="/luxmorai-logo.png" alt="Luxmorai Technologies Pvt Ltd" />
+              <img src="/luxmorai-logo.jpeg" alt="Luxmorai Technologies Pvt Ltd official logo" />
             </div>
           </div>
 
@@ -91,7 +99,8 @@ export function About() {
             <p className="eyebrow">Who We Are</p>
             <h2>Technology that moves your business forward.</h2>
             <p>
-              Luxmorai Technologies stands at the forefront of the IT industry, delivering software solutions and
+              Luxmorai Technologies Pvt Ltd, commonly known as Luxmorai Technologies or Luxmor AI, is an India-based
+              AI and software development company delivering software solutions and
               professional services for clients who want dependable digital execution. We specialize in strategic
               technology initiatives that help businesses move faster, modernize operations, and serve customers better.
             </p>
@@ -110,6 +119,41 @@ export function About() {
               <span><Check /> Support that lasts beyond launch</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="about-identity-section" aria-labelledby="official-company-information">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="about-identity-heading">
+            <p className="eyebrow">Official company identity</p>
+            <h2 id="official-company-information">Luxmorai Technologies company information</h2>
+            <p>This is the canonical company information used across our website and official business profiles.</p>
+          </div>
+          <dl className="about-identity-grid">
+            <div>
+              <Building2 aria-hidden="true" />
+              <dt>Legal name</dt>
+              <dd>Luxmorai Technologies Pvt Ltd</dd>
+            </div>
+            <div>
+              <Globe2 aria-hidden="true" />
+              <dt>Official website</dt>
+              <dd><a href="https://www.luxmorai.com/">www.luxmorai.com</a></dd>
+            </div>
+            <div>
+              <Linkedin aria-hidden="true" />
+              <dt>Official LinkedIn</dt>
+              <dd><a href={LINKEDIN_URL} target="_blank" rel="me noopener noreferrer">Luxmorai Technologies on LinkedIn</a></dd>
+            </div>
+            <div>
+              <Mail aria-hidden="true" />
+              <dt>Company email</dt>
+              <dd><a href="mailto:info@luxmorai.com">info@luxmorai.com</a></dd>
+            </div>
+          </dl>
+          <p className="about-identity-aliases">
+            Also known as: <strong>Luxmor AI</strong>, <strong>Luxmorai AI Technologies</strong>, and <strong>Luxmorai</strong>.
+          </p>
         </div>
       </section>
 

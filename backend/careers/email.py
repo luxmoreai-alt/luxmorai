@@ -17,7 +17,7 @@ def get_email_context(application):
         "application": application,
         "application_number": get_application_number(application),
         "track_url": track_url,
-        "logo_url": f"{site_url}/luxmorai-logo.png",
+        "logo_url": f"{site_url}/luxmorai-logo.jpeg",
         "careers_url": f"{site_url}/careers",
         "contact_url": "mailto:hr@luxmorai.com",
     }
@@ -54,8 +54,12 @@ def send_application_confirmation(application):
 
 
 def send_application_status_update(application):
+    subject = f"Luxmorai application status update - {get_application_number(application)}"
+    if application.status == "selected":
+        subject = f"Congratulations - You have been selected - {get_application_number(application)}"
+
     return send_career_email(
         application,
-        f"Luxmorai application status update - {get_application_number(application)}",
+        subject,
         "careers/application_status_update.html",
     )
