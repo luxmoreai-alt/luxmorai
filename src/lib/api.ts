@@ -126,18 +126,30 @@ export type ApiBlogPost = {
   updatedAt: string;
 };
 
+function resolveApiAssetUrl(url: string) {
+  if (!url || !url.startsWith("/api/")) return url;
+  return `${API_BASE_URL}${url.slice(4)}`;
+}
+
+function normalizeBlogPost(post: ApiBlogPost): ApiBlogPost {
+  return {
+    ...post,
+    image: resolveApiAssetUrl(post.image),
+  };
+}
+
 export async function sendInquiry(payload: InquiryPayload) {
   return api.post("/inquiries/", payload);
 }
 
 export async function getBlogPosts() {
   const response = await api.get<{ posts: ApiBlogPost[] }>("/blog-posts/");
-  return response.data.posts;
+  return response.data.posts.map(normalizeBlogPost);
 }
 
 export async function getBlogPost(slug: string) {
   const response = await api.get<{ post: ApiBlogPost }>(`/blog-posts/${slug}/`);
-  return response.data.post;
+  return normalizeBlogPost(response.data.post);
 }
 
 export async function getCareerJobs() {
@@ -169,21 +181,21 @@ export async function getAdminJobs() {
 
 export async function getAdminBlogPosts() {
   const response = await api.get<{ posts: ApiBlogPost[] }>("/admin/blog-posts/");
-  return response.data.posts;
+  return response.data.posts.map(normalizeBlogPost);
 }
 
 export async function createAdminBlogPost(payload: FormData) {
   const response = await api.post<{ post: ApiBlogPost }>("/admin/blog-posts/", payload, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-  return response.data.post;
+  return normalizeBlogPost(response.data.post);
 }
 
 export async function updateAdminBlogPost(postId: number, payload: FormData) {
   const response = await api.post<{ post: ApiBlogPost }>(`/admin/blog-posts/${postId}/`, payload, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-  return response.data.post;
+  return normalizeBlogPost(response.data.post);
 }
 
 export async function toggleAdminBlogPost(postId: number) {

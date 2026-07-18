@@ -87,7 +87,7 @@ def serialize_blog_post(post, request=None):
     if post.image_file:
         image_version = int(post.updated_at.timestamp()) if post.updated_at else 0
         image_path = f"/api/blog-posts/{post.id}/image/?v={image_version}"
-        image_url = image_path
+        image_url = request.build_absolute_uri(image_path) if request else image_path
 
     return {
         "id": post.id,
